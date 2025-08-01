@@ -1040,12 +1040,23 @@
                 this.cycleDuration = 90000; // 90 másodperc milliszekundumban
                 this.colorTransitionDuration = this.cycleDuration / this.colorPairs.length; // 15 másodperc egy színre
                 
-                this.updateColors(this.colorPairs[0]);
+                // Kezdeti színek beállítása
+                this.setInitialColors();
                 this.startSynchronizedAnimation();
 
                 setTimeout(() => {
                     this.auroraBlobs.forEach(b => b.classList.add('visible'));
                 }, 1000);
+            }
+
+            setInitialColors() {
+                const initialPair = this.colorPairs[0];
+                this.root.style.setProperty('--primary', initialPair.primary);
+                this.root.style.setProperty('--secondary', initialPair.secondary);
+                this.root.style.setProperty('--accent', initialPair.primary);
+                this.root.style.setProperty('--border-glow', `rgba(${this.hexToRgb(initialPair.primary)}, 0.7)`);
+                this.root.style.setProperty('--primary-rgb', this.hexToRgb(initialPair.primary));
+                this.root.style.setProperty('--secondary-rgb', this.hexToRgb(initialPair.secondary));
             }
 
             startSynchronizedAnimation = () => {
@@ -1259,9 +1270,6 @@
                         currentY: touch.clientY,
                         startTime: Date.now()
                     });
-                    
-                    // Vizuális feedback
-                    this.createGestureVisual(touch.clientX, touch.clientY);
                 }
 
                 // Speciális gesture-ök detektálása
@@ -1281,9 +1289,6 @@
                         const touchData = this.touches.get(touch.identifier);
                         touchData.currentX = touch.clientX;
                         touchData.currentY = touch.clientY;
-                        
-                        // Trail létrehozása
-                        this.createGestureTrail(touch.clientX, touch.clientY);
                     }
                 }
 
@@ -1469,29 +1474,11 @@
             }
 
             createGestureVisual(x, y) {
-                const visual = document.createElement('div');
-                visual.className = 'gesture-visual active';
-                visual.style.left = (x - 30) + 'px';
-                visual.style.top = (y - 30) + 'px';
-                
-                document.getElementById('gestureDetector').appendChild(visual);
-                
-                setTimeout(() => visual.remove(), 600);
+                // Nincs vizuális feedback, csak haptic
             }
 
             createGestureTrail(x, y) {
-                const trail = document.createElement('div');
-                trail.className = 'gesture-trail';
-                trail.style.left = x + 'px';
-                trail.style.top = y + 'px';
-                
-                document.getElementById('gestureDetector').appendChild(trail);
-                this.gestureTrails.push(trail);
-                
-                setTimeout(() => {
-                    trail.style.opacity = '0';
-                    setTimeout(() => trail.remove(), 300);
-                }, 100);
+                // Trail tracking kikapcsolva
             }
 
             clearGestureTrails() {
@@ -1607,7 +1594,7 @@
 
         // --- Alkalmazás Inicializálása Gesture-ökkel ---
         document.addEventListener('DOMContentLoaded', () => {
-            new DynamicThemeManager();
+            window.themeManager = new DynamicThemeManager();
             createSVGLogo();
             setupEventListeners();
             loadServices();
