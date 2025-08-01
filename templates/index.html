@@ -339,14 +339,14 @@
             width: 100%; height: 100%; border-radius: 50%;
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            border: 1px solid var(--primary);
-            background: var(--primary);
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             transition: all 0.3s var(--transition-curve);
         }
         .send-btn:hover { 
             transform: scale(1.05); 
-            box-shadow: 0 0 15px var(--primary);
+            box-shadow: 0 0 15px rgba(0, 122, 255, 0.5);
         }
 
         /* Töltés és Visszajelzés */
@@ -374,75 +374,7 @@
         }
 
         /* NATÍV iOS PWA GESTURES ÉS HAPTIC FEEDBACK */
-        .gesture-context-menu {
-            background: var(--surface);
-            backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 12px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-            animation: nativeContextSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-origin: center bottom;
-        }
-
-        .context-item {
-            padding: 12px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .context-item::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            border-radius: 12px;
-        }
-
-        .context-item:hover::before,
-        .context-item:active::before {
-            opacity: 0.1;
-        }
-
-        .context-item:hover {
-            background: var(--glass-strong);
-            color: var(--primary);
-            transform: scale(1.02);
-        }
-
-        .context-item:active {
-            transform: scale(0.98);
-        }
-
-        .context-item i {
-            width: 20px;
-            text-align: center;
-            z-index: 1;
-            position: relative;
-        }
-
-        @keyframes nativeContextSlideIn {
-            from { 
-                opacity: 0; 
-                transform: scale(0.8) translateY(20px); 
-                filter: blur(10px);
-            }
-            to { 
-                opacity: 1; 
-                transform: scale(1) translateY(0); 
-                filter: blur(0px);
-            }
-        }
+        /* Gesture context menu eltávolítva - nincs szükség rá */
 
         /* NATÍV iOS FINGER GESTURE RENDSZER */
 
