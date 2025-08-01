@@ -1118,6 +1118,16 @@
             return div.innerHTML;
         }
 
+        // Szolgáltatás kiválasztás függvény
+        function selectService(serviceName, serviceDescription) {
+            hideWelcome();
+            const prompt = `Kérlek segíts a következő szolgáltatással: ${serviceName} - ${serviceDescription}`;
+            messageInput.value = prompt;
+            messageInput.dispatchEvent(new Event('input'));
+            messageInput.focus();
+            closeSidebar();
+        }
+
         // --- Deep Search Progress Indicator ---
         function showResearchIndicator(query) {
             const indicatorDiv = document.createElement('div');
@@ -1222,8 +1232,12 @@
         }
 
         function showDocumentViewer() {
-            // Document viewer implementáció
-            console.log('Document viewer megnyitása...');
+            if (AppState.researchState && AppState.researchState.documentContent) {
+                // AI üzenet hozzáadása a kutatás eredményével
+                addAiMessage(AppState.researchState.documentContent);
+            } else {
+                addAiMessage("Nincs elérhető dokumentum tartalom.");
+            }
         }
 
         // Speciális funkciók
