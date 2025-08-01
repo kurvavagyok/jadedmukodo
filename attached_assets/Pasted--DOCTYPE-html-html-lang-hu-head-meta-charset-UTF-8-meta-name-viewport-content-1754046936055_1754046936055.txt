@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JADED - Deep Discovery AI Platform</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JADED">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000' rx='22'/%3E%3Cpath d='M 30 28 C 30 50 50 72 70 72' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='30' cy='72' r='6' fill='white'/%3E%3C/svg%3E">
+    <link rel="manifest" href="data:application/manifest+json,{}">
+    
+    <!-- Külső erőforrások -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            /* Dinamikus színek a csatolt stílusból */
+            --color-blue: #007AFF;
+            --color-neon-green: #39FF14;
+            --color-pink: #FF2D55;
+            --color-purple: #AF52DE;
+            --color-gold: #FFD700;
+
+            /* Alap JADED stílusok finomítva */
+            --bg: #000000;
+            --surface: rgba(10, 10, 10, 0.6);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f0f0f0;
+            --text-muted: #94a3b8;
+            --radius: 12px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --transition-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { height: 100%; height: -webkit-fill-available; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Dinamikus, görgetésre változó háttér */
+        #gradient-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            transition: background 0.5s ease-out;
+        }
+
+        /* Fő elrendezés */
+        .container { display: flex; min-height: 100vh; min-height: -webkit-fill-available; }
+        .sidebar {
+            width: 260px; background: rgba(5, 5, 5, 0.6); backdrop-filter: blur(30px) saturate(180%);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            transition: transform 0.4s var(--transition-curve);
+            position: fixed; top: 0; left: 0; height: 100%; z-index: 1000;
+            transform: translateX(-100%);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .header {
+            padding: 8px 16px; background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100; height: 56px; flex-shrink: 0;
+        }
+        .menu-toggle {
+            background: transparent; border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text-muted); cursor: pointer;
+            font-size: 0.9rem; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s var(--transition-curve);
+        }
+        .menu-toggle:hover { border-color: var(--color-blue); color: var(--text); }
+        .header-title {
+            font-size: 1.1rem; font-weight: 600;
+            background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .messages-container { flex: 1; overflow-y: auto; padding: 16px; scroll-behavior: smooth; }
+        .welcome-screen {
+            text-align: center; padding: 30px 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; animation: fadeIn 1s var(--transition-curve);
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .sidebar-header { padding: 16px 12px; border-bottom: 1px solid var(--border); }
+        .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        #logo-canvas { width: 36px; height: 36px; cursor: pointer; }
+        .logo-text h1 { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+        .logo-text p { font-size: 0.7rem; color: var(--text-muted); }
+        .new-chat-btn {
+            width: 100%; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border); color: var(--text);
+            border-radius: var(--radius); padding: 10px 12px;
+            font-weight: 500; font-size: 0.8rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.3s var(--transition-curve);
+        }
+        .new-chat-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--color-blue); }
+        .sidebar-content { padding: 12px; flex-grow: 1; overflow-y: auto; }
+        .sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
+        .made-by { font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+
+        .message { margin-bottom: 16px; display: flex; max-width: 80%; animation: messageSlideIn 0.4s var(--transition-curve); }
+        .user-message { justify-content: flex-end; margin-left: auto; }
+        .user-bubble {
+            background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+            color: #fff; padding: 10px 14px;
+            border-radius: 16px 16px 4px 16px;
+            font-size: 0.9rem; line-height: 1.5;
+        }
+        .ai-message { flex-direction: column; }
+        .ai-content {
+            background: rgba(15, 23, 42, 0.8); padding: 10px 14px;
+            border-radius: 16px 16px 16px 4px;
+            font-size: 0.9rem; line-height: 1.6;
+            border: 1px solid var(--border);
+        }
+        .ai-content pre {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+            border-radius: 6px; padding: 10px; margin: 10px 0;
+            font-size: 0.8rem; overflow-x: auto;
+        }
+
+        .input-area {
+            padding: 10px 16px; background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px); border-top: 1px solid var(--border);
+            position: sticky; bottom: 0; z-index: 50; flex-shrink: 0;
+        }
+        @supports (padding: max(0px)) { .input-area { padding-bottom: max(10px, env(safe-area-inset-bottom)); } }
+        .input-wrapper { max-width: 800px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
+        .message-input {
+            flex: 1; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 10px 14px; color: var(--text);
+            font-size: 0.9rem; resize: none; outline: none;
+            transition: all 0.3s var(--transition-curve);
+            min-height: 40px; max-height: 120px; font-family: inherit; line-height: 1.4;
+        }
+        .message-input:focus { border-color: var(--color-blue); background: rgba(255, 255, 255, 0.08); }
+        
+        .send-btn-container { position: relative; width: 40px; height: 40px; flex-shrink: 0; }
+        .send-btn {
+            width: 100%; height: 100%; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            border: none; background: var(--color-blue);
+            color: white;
+            transition: all 0.4s var(--transition-curve);
+        }
+        .send-btn:hover { transform: scale(1.1); filter: brightness(1.2); }
+        .send-btn:disabled { background: #333; cursor: not-allowed; transform: scale(1); }
+        .send-btn i { transition: transform 0.4s var(--transition-curve); }
+        
+        .typing-indicator { display: flex; gap: 4px; align-items: center; }
+        .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); animation: typing-bounce 1.2s infinite ease-in-out; }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typing-bounce { 0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; } 40% { transform: scale(1.0); opacity: 1; } }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 240px; }
+            .header-title { font-size: 0.9rem; }
+            .messages-container, .input-area { padding: 12px; }
+            .message { max-width: 90%; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="gradient-background"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar" role="navigation">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <canvas id="logo-canvas"></canvas>
+                    <div class="logo-text">
+                        <h1>JADED</h1>
+                        <p>Deep Discovery</p>
+                    </div>
+                </div>
+                <button class="new-chat-btn" onclick="newChat()">
+                    <i class="fas fa-plus"></i>
+                    Új beszélgetés
+                </button>
+            </div>
+            <div class="sidebar-content" id="sidebarContent"></div>
+            <div class="sidebar-footer">
+                <p class="made-by">JADE v4.2 by Sándor Kollár</p>
+            </div>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <header class="header">
+                <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menü megnyitása/bezárása">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">JADE AI Platform</h1>
+                <div></div> <!-- Spacer -->
+            </header>
+
+            <div class="chat-area">
+                <div class="messages-container" id="messagesContainer" aria-live="polite">
+                    <div class="welcome-screen" id="welcomeScreen"></div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="message-input" 
+                            id="messageInput" 
+                            placeholder="Írj egy üzenetet..."
+                            rows="1"
+                            aria-label="Üzenet beviteli mező"
+                        ></textarea>
+                        <div class="send-btn-container">
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Üzenet küldése" disabled>
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="modal-container"></div>
+
+    <script>
+        const AppState = { isTyping: false, userId: 'user_' + Math.random().toString(36).substr(2, 9) };
+        const getEl = (id) => document.getElementById(id);
+        const sidebar = getEl('sidebar'), sidebarOverlay = getEl('sidebarOverlay'),
+              sidebarContent = getEl('sidebarContent'),
+              messagesContainer = getEl('messagesContainer'), messageInput = getEl('messageInput'),
+              sendBtn = getEl('sendBtn');
+        let welcomeScreen = getEl('welcomeScreen');
+
+        // --- Dinamikus, görgetésre változó háttér ---
+        class GradientBackground {
+            constructor() {
+                this.gradientBg = getEl('gradient-background');
+                this.colors = [
+                    [0, 122, 255],     // blue
+                    [57, 255, 20],     // neon green
+                    [255, 45, 85],     // pink
+                    [175, 82, 222],    // purple
+                    [255, 215, 0]      // gold
+                ];
+                messagesContainer.addEventListener('scroll', this.updateGradient, { passive: true });
+                this.animateBackground();
+            }
+
+            interpolateColor(color1, color2, factor) {
+                let result = color1.slice();
+                for (let i = 0; i < 3; i++) {
+                    result[i] = Math.round(result[i] + factor * (color2[i] - result[i]));
+                }
+                return `rgba(${result[0]}, ${result[1]}, ${result[2]}, 0.2)`;
+            }
+
+            updateGradient = () => {
+                const scrollableHeight = messagesContainer.scrollHeight - messagesContainer.clientHeight;
+                const scrollProgress = scrollableHeight > 0 ? messagesContainer.scrollTop / scrollableHeight : 0;
+
+                const time = Date.now() * 0.0001;
+                const x1 = 30 + Math.sin(time) * 20;
+                const y1 = 20 + Math.cos(time * 0.7) * 20;
+                const x2 = 70 + Math.cos(time * 0.5) * 20;
+                const y2 = 80 + Math.sin(time * 0.3) * 20;
+
+                const totalSegments = this.colors.length - 1;
+                const currentSegment = Math.min(Math.floor(scrollProgress * totalSegments), totalSegments - 1);
+                const segmentProgress = (scrollProgress * totalSegments) - currentSegment;
+
+                const color1 = this.interpolateColor(this.colors[currentSegment], this.colors[currentSegment + 1] || this.colors[0], segmentProgress);
+                const color2 = this.interpolateColor(this.colors[currentSegment + 1] || this.colors[0], this.colors[currentSegment + 2] || this.colors[1], segmentProgress);
+
+                this.gradientBg.style.background = `
+                    radial-gradient(ellipse at ${x1}% ${y1}%, ${color1} 0%, transparent 70%),
+                    radial-gradient(ellipse at ${x2}% ${y2}%, ${color2} 0%, transparent 70%)
+                `;
+            }
+            
+            animateBackground = () => {
+                this.updateGradient();
+                requestAnimationFrame(this.animateBackground);
+            }
+        }
+
+        // --- API Kommunikáció ---
+        async function fetchAPI(endpoint, options = {}) {
+            try {
+                const response = await fetch(`/api${endpoint}`, {
+                    ...options,
+                    headers: { 'Content-Type': 'application/json', ...options.headers }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                hideTypingIndicator();
+                addAiMessage('Hiba történt a szerverrel való kommunikáció során.');
+                throw error;
+            }
+        }
+
+        // --- 3D Logó Animáció ---
+        let logoRenderer, logoScene, logoCamera, brainParticles;
+        function init3DLogo() {
+            const canvas = getEl('logo-canvas');
+            if (!canvas) return;
+            logoScene = new THREE.Scene();
+            logoCamera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            logoRenderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            logoRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            logoRenderer.setPixelRatio(window.devicePixelRatio);
+
+            const particleCount = 1200;
+            const particlesGeometry = new THREE.BufferGeometry();
+            const posArray = new Float32Array(particleCount * 3);
+            for(let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 2.5;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMaterial = new THREE.PointsMaterial({ size: 0.015 });
+            brainParticles = new THREE.Points(particlesGeometry, particlesMaterial);
+            logoScene.add(brainParticles);
+            logoCamera.position.z = 1.8;
+            
+            animateLogo();
+        }
+        function animateLogo() {
+            requestAnimationFrame(animateLogo);
+            brainParticles.rotation.y += 0.001;
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim();
+            brainParticles.material.color.set(primaryColor);
+            logoRenderer.render(logoScene, logoCamera);
+        }
+
+        // --- Alkalmazás Inicializálása ---
+        document.addEventListener('DOMContentLoaded', () => {
+            new GradientBackground();
+            init3DLogo();
+            setupEventListeners();
+            loadServices();
+            newChat();
+            messageInput.focus();
+        });
+
+        function setupEventListeners() {
+            messageInput.addEventListener('input', () => {
+                sendBtn.disabled = messageInput.value.trim().length === 0;
+            });
+            messageInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!sendBtn.disabled) sendMessage();
+                }
+            });
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        // --- UI Kezelők ---
+        function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.style.cssText = "opacity:1; visibility: visible;"; }
+        function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.style.cssText = "opacity:0; visibility: hidden;"; }
+        function toggleSidebar() { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); }
+        function hideWelcome() { if (welcomeScreen) { welcomeScreen.style.display = 'none'; welcomeScreen = null; } }
+        function newChat() {
+            messagesContainer.innerHTML = '';
+            const newWelcome = document.createElement('div');
+            newWelcome.className = 'welcome-screen';
+            newWelcome.id = 'welcomeScreen';
+            newWelcome.innerHTML = `<h1 style="font-size: 2.2rem; font-weight: 700; background: linear-gradient(135deg, var(--color-blue), var(--color-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">JADED</h1><p style="font-size: 0.9rem; color: var(--text-muted);">Fejlett AI asszisztensed.</p>`;
+            messagesContainer.appendChild(newWelcome);
+            welcomeScreen = newWelcome;
+            messageInput.value = '';
+            messageInput.dispatchEvent(new Event('input'));
+            messageInput.focus();
+            closeSidebar();
+        }
+
+        // --- Szolgáltatások (a teljesség igénye nélkül) ---
+        async function loadServices() {
+            sidebarContent.innerHTML = `<div style="padding:1rem; color: var(--text-muted);">Szolgáltatások...</div>`;
+        }
+        
+        // --- Üzenetküldés ---
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || AppState.isTyping) return;
+            hideWelcome();
+            addUserMessage(message);
+            messageInput.value = '';
+            messageInput.dispatchEvent(new Event('input'));
+            showTypingIndicator();
+            try {
+                const data = await fetchAPI('/deep_discovery/chat', {
+                    method: 'POST', body: JSON.stringify({ message, user_id: AppState.userId })
+                });
+                hideTypingIndicator();
+                addAiMessage(data.response);
+            } catch (error) {}
+        }
+        function addUserMessage(msg) {
+            messagesContainer.innerHTML += `<div class="message user-message"><div class="user-bubble">${escapeHtml(msg)}</div></div>`;
+            scrollToBottom();
+        }
+        function addAiMessage(content) {
+            const parsed = marked.parse(content);
+            messagesContainer.innerHTML += `<div class="message ai-message"><div class="ai-content">${parsed}</div></div>`;
+            messagesContainer.querySelectorAll('pre code').forEach(hljs.highlightElement);
+            scrollToBottom();
+        }
+        function showTypingIndicator() {
+            if (AppState.isTyping) return;
+            AppState.isTyping = true; sendBtn.disabled = true;
+            messagesContainer.innerHTML += `<div class="message ai-message" id="typingIndicator"><div class="ai-content" style="padding: 12px 14px;"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+            scrollToBottom();
+        }
+        function hideTypingIndicator() {
+            AppState.isTyping = false; sendBtn.disabled = false;
+            getEl('typingIndicator')?.remove();
+        }
+        function scrollToBottom() { messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' }); }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
