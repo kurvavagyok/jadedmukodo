@@ -3371,7 +3371,7 @@ OPENAI_ORG_ID = os.environ.get("OPENAI_ORG_ID")
 OPENAI_ADMIN_KEY = os.environ.get("OPENAI_ADMIN_KEY")
 
 # Claude API kulcs
-CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
+CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
 
 # --- Token Limit Definíciók - Frissítve az új OpenAI API kulcshoz ---
 TOKEN_LIMITS = {
