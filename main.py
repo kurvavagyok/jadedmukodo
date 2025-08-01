@@ -5984,55 +5984,51 @@ async def deep_research(req: DeepResearchRequest):
         cleanup_memory()
         gc.collect()
 
-        # SZINKRON PÁRHUZAMOS VÉGREHAJTÁS - 4 AI egyidejűleg
-        async def parallel_exa_search():
-            """EXA keresési fázis"""
-            exa_results = []
-            exa_content = ""
-            
-            if exa_client and EXA_AVAILABLE:
-                try:
-                    logger.info("PARALLEL Phase 1: EXA neural search...")
-                    exa_queries = [
-                        f"{req.query} comprehensive analysis 2024",
-                        f"{req.query} research scientific study"
-                    ]
+        # === 1. EXA KERESÉSI FÁZIS ===
+        exa_results = []
+        exa_content = ""
+        
+        if exa_client and EXA_AVAILABLE:
+            try:
+                logger.info("Phase 1: EXA neural search...")
+                exa_queries = [
+                    f"{req.query} comprehensive analysis 2024",
+                    f"{req.query} research scientific study"
+                ]
 
-                    for query in exa_queries:
-                        try:
-                            search_result = exa_client.search_and_contents(
-                                query=query,
-                                type="neural",
-                                num_results=30,
-                                text=True,
-                                start_published_date="2020-01-01"
-                            )
-                            if search_result and search_result.results:
-                                exa_results.extend(search_result.results)
-                        except Exception as e:
-                            logger.warning(f"EXA error: {e}")
-                            continue
+                for query in exa_queries:
+                    try:
+                        search_result = exa_client.search_and_contents(
+                            query=query,
+                            type="neural",
+                            num_results=30,
+                            text=True,
+                            start_published_date="2020-01-01"
+                        )
+                        if search_result and search_result.results:
+                            exa_results.extend(search_result.results)
+                    except Exception as e:
+                        logger.warning(f"EXA error: {e}")
+                        continue
 
-                    for result in exa_results[:40]:
-                        if hasattr(result, 'text') and result.text:
-                            exa_content += f"FORRÁS: {result.title}\n{result.text[:2000]}\n\n"
+                for result in exa_results[:40]:
+                    if hasattr(result, 'text') and result.text:
+                        exa_content += f"FORRÁS: {result.title}\n{result.text[:2000]}\n\n"
 
-                    logger.info(f"EXA complete: {len(exa_results)} results")
-                    
-                except Exception as e:
-                    logger.error(f"EXA phase error: {e}")
-                    exa_content = "EXA keresés hiba"
-                    
-            return exa_results, exa_content
+                logger.info(f"EXA complete: {len(exa_results)} results")
+                
+            except Exception as e:
+                logger.error(f"EXA phase error: {e}")
+                exa_content = "EXA keresés hiba"
 
-        # === 2. GEMINI 2.5 PRO WEBES KERESÉS ÉS ELEMZÉS (200% Fokozott teljesítmény) ===
+        # === 2. GEMINI 2.5 PRO WEBES KERESÉS ÉS ELEMZÉS ===
         gemini_search_results = ""
 
         if gemini_25_pro and GEMINI_AVAILABLE:
             try:
                 logger.info("Phase 2: Enhanced GEMINI 2.5 Pro comprehensive search starting...")
 
-                # Optimalizált Gemini keresési stratégia - 200% hatékonyság növelés
+                # Optimalizált Gemini keresési stratégia
                 enhanced_gemini_queries = [
                     f"MÉLYREHATÓ KUTATÁSI JELENTÉS: {req.query} - 2024 legfrissebb fejlemények, tudományos áttörések, iparági trendek, szakértői elemzések minimum 20 forrás alapján",
                     f"NEMZETKÖZI ÖSSZEHASONLÍTÓ ELEMZÉS: {req.query} - globális perspektívák, regionális különbségek, nemzetközi best practice-ek, jövőbeli előrejelzések",
@@ -6046,7 +6042,7 @@ async def deep_research(req: DeepResearchRequest):
                         
                         gemini_response = await gemini_25_pro.generate_content_async(
                             f"""
-                            🔍 GEMINI 2.5 PRO ULTRA MAXIMÁLIS RESEARCH SYSTEM - 500% TELJESÍTMÉNY NÖVELÉS
+                            🔍 GEMINI 2.5 PRO ULTRA MAXIMÁLIS RESEARCH SYSTEM
 
                             Kutatási téma: {query}
                             
@@ -6101,14 +6097,14 @@ async def deep_research(req: DeepResearchRequest):
                 logger.error(f"Enhanced GEMINI search phase error: {e}")
                 gemini_search_results = "Enhanced Gemini keresés során hiba történt - OpenAI kompenzálja"
 
-        # === 3. OPENAI GPT-4 ENHANCED KUTATÁS (200% Teljesítmény Fokozás) ===
+        # === 3. OPENAI GPT-4 ENHANCED KUTATÁS ===
         openai_search_results = ""
 
         if openai_client and OPENAI_AVAILABLE:
             try:
                 logger.info("Phase 3: Enhanced OPENAI GPT-4 comprehensive research starting...")
 
-                # Optimalizált OpenAI kutatási stratégia - 200% hatékonyság növelés
+                # Optimalizált OpenAI kutatási stratégia
                 enhanced_openai_queries = [
                     f"MASTER RESEARCH REPORT: {req.query} - Comprehensive 2024 analysis with 30+ sources, market dynamics, technological breakthroughs, competitive landscape",
                     f"STRATEGIC INTELLIGENCE BRIEFING: {req.query} - Investment trends, regulatory changes, stakeholder analysis, risk assessment, opportunity mapping",
@@ -6127,7 +6123,7 @@ async def deep_research(req: DeepResearchRequest):
                             messages=[{
                                 "role": "user", 
                                 "content": f"""
-                                🚀 OPENAI GPT-4 ULTRA MAXIMÁLIS RESEARCH ENGINE - 500% TELJESÍTMÉNY FOKOZÁS
+                                🚀 OPENAI GPT-4 ULTRA MAXIMÁLIS RESEARCH ENGINE
 
                                 Kutatási téma: {query}
                                 
@@ -6196,31 +6192,30 @@ async def deep_research(req: DeepResearchRequest):
                 logger.error(f"Enhanced OPENAI search phase error: {e}")
                 openai_search_results = "Enhanced OpenAI keresés során hiba történt - Gemini biztosítja a kontinuitást"
 
-        # === 4. ENHANCED VÉGSŐ SZINTÉZIS ÉS JELENTÉS GENERÁLÁS (200% FOKOZOTT TELJESÍTMÉNY) ===
+        # === 4. VÉGSŐ SZINTÉZIS ÉS JELENTÉS GENERÁLÁS ===
         final_comprehensive_report = ""
 
         elapsed_time = time.time() - start_time  
-        remaining_time = max(60, 240 - elapsed_time)  # Megnövelt idő a jobb minőségért
+        remaining_time = max(60, 240 - elapsed_time)
 
-        # Enhanced research_state dictionary for superior progress tracking
+        # Research state tracking
         research_state = {
-            "phase": "enhanced_final_synthesis",
+            "phase": "final_synthesis",
             "progress": 75,
-            "status": "🚀 Enhanced 25,000+ karakteres jelentés generálása - 200% teljesítmény fokozás...",
+            "status": "🚀 Jelentés generálása...",
             "estimated_time": f"~{int(remaining_time/60)}:{int(remaining_time%60):02d} perc hátralevő idő",
             "elapsed_time": f"{int(elapsed_time/60)}:{int(elapsed_time%60):02d}",
             "total_phases": 4,
-            "phases_completed": 3,
-            "enhancement_level": "MAXIMUM"
+            "phases_completed": 3
         }
 
-        # MOBIL-OPTIMALIZÁLT ÉS GYORSÍTOTT JELENTÉSGENERÁLÁS
+        # MOBIL-OPTIMALIZÁLT JELENTÉSGENERÁLÁS
         if cerebras_client and CEREBRAS_AVAILABLE:
             try:
                 logger.info("Phase 4: MOBIL-OPTIMALIZÁLT Cerebras Llama-4 Scout jelentésgenerálás...")
 
                 research_state["progress"] = 85
-                research_state["status"] = "📱 Mobil-optimalizált jelentés generálása - Gyorsított rendszer..."
+                research_state["status"] = "📱 Mobil-optimalizált jelentés generálása..."
 
                 # MAGYAR NYELVŰ MOBIL-OPTIMALIZÁLT JELENTÉS PROMPT
                 mobile_optimized_prompt = f"""
@@ -6230,17 +6225,16 @@ async def deep_research(req: DeepResearchRequest):
 
                 Témakör: {req.query}
                 
-                NYELVI KÖVETELMÉNYEK - KRITIKUS FONTOSSÁGÚ:
+                NYELVI KÖVETELMÉNYEK:
                 🇭🇺 KIZÁRÓLAG MAGYAR NYELV HASZNÁLATA
-                🇭🇺 SEMMIFÉLE ANGOL KIFEJEZÉS VAGY SZÖVEG
                 🇭🇺 MAGYAR SZAKMAI TERMINOLÓGIA
                 🇭🇺 MAGYAR NYELVTANI SZABÁLYOK BETARTÁSA
 
-                MOBILESZKÖZ-KOMPATIBILIS FORMÁZÁSI KÖVETELMÉNYEK:
+                MOBILESZKÖZ-KOMPATIBILIS FORMÁZÁS:
                 ✅ Rövid bekezdések (max 3-4 sor)
                 ✅ Tiszta struktúra mobilnézethez
                 ✅ Könnyen olvasható szövegméret
-                ✅ Egyszerű, de részletes tartalom
+                ✅ Részletes tartalom
                 ✅ Gyors betöltés optimalizálás
 
                 FORRÁSANYAGOK:
