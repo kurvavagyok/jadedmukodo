@@ -73,7 +73,11 @@ except ImportError:
     CLAUDE_AVAILABLE = False
 
 # FastAPI
-from fastapi import FastAPI, HTTPException, status, Request, Response
+from fastapi import FastAPI, HTTPException, status
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+import uvicorn
+import os, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -7824,7 +7828,20 @@ class AlphaFold3ModelRunner:
                 "min": float(np.min(confidences)),
                 "max": float(np.max(confidences))
             },
-            "total_atoms": sum(len(r["structure"]["atom_coordinates"]) for r in results),
+            "total_structures": len(results)
+        }
+
+# Add static files and templates
+app.mount("/static", StaticFiles(directory="templates"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open("templates/index.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    uvicorn.run(app, host="0.0.0.0", port=port)tal_atoms": sum(len(r["structure"]["atom_coordinates"]) for r in results),
             "prediction_quality": "excellent" if avg_confidence > 0.9 else "good" if avg_confidence > 0.7 else "moderate"
         }
 
