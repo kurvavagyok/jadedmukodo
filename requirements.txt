@@ -55,3 +55,4 @@ openai
 anthropic>=0.7.0
 msgpack
 msgpack
+replit-object-storage

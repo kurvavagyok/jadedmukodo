@@ -23,15 +23,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-            /* Dinamikus színek, JS által frissítve */
-            --primary: #007AFF; /* Kék */
-            --secondary: #39FF14; /* Neon zöld */
-            --accent: #39FF14;
+            /* Dinamikus színek - egyszerre változnak */
+            --primary: #007AFF;
+            --secondary: #007AFF;
+            --accent: #007AFF;
             --border-glow: rgba(0, 122, 255, 0.5);
             --primary-rgb: 0, 122, 255;
-            --secondary-rgb: 57, 255, 20;
+            --secondary-rgb: 0, 122, 255;
             
-            /* További színek */
+            /* Egységes színpaletta */
             --color-blue: #007AFF;
             --color-neon-green: #39FF14;
             --color-pink: #FF2D55;
@@ -45,10 +45,10 @@
             --border: rgba(255, 255, 255, 0.1);
             --text: #f0f0f0;
             --text-muted: #94a3b8;
-            --radius: 10px;
+            --radius: 20px;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             --transition-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-color-slow: 30s linear;
+            --transition-color-slow: 2s ease-in-out;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -205,14 +205,18 @@
         }
         .service-item:hover { background: var(--glass-strong); border-color: transparent transparent transparent var(--primary); transform: translateX(4px); color: #fff; }
         .service-icon {
-            width: 24px; height: 24px;
-            background: linear-gradient(135deg, var(--glass-strong), var(--glass));
-            border: 1px solid var(--border); border-radius: 6px;
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--primary), rgba(0, 122, 255, 0.8));
+            border: 1px solid var(--primary); border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; flex-shrink: 0;
+            font-size: 1rem; flex-shrink: 0; color: white;
             transition: all 0.3s var(--transition-curve);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
-        .service-item:hover .service-icon { transform: scale(1.1); color: var(--secondary); border-color: var(--secondary); }
+        .service-item:hover .service-icon { 
+            transform: scale(1.1) rotate(5deg); 
+            box-shadow: 0 6px 20px var(--primary);
+        }
         .service-info h4 { font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
         .service-info p { font-size: 0.7rem; color: var(--text-muted); }
 
@@ -320,16 +324,14 @@
         }
         .message-input {
             flex: 1; background: var(--glass-strong);
-            border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 10px 16px; color: var(--text);
+            border: 1px solid var(--border); border-radius: 25px;
+            padding: 8px 16px; color: var(--text);
             font-size: 0.9rem; resize: none; outline: none;
             transition: all 0.3s var(--transition-curve);
-            min-height: 40px; max-height: 120px; font-family: inherit; line-height: 1.4;
+            min-height: 32px; max-height: 100px; font-family: inherit; line-height: 1.4;
         }
 
-        /* ÚJ, "BOMBA" KÜLDÉS GOMB */
         .send-btn-container {
-            position: relative;
             width: 40px; height: 40px;
             flex-shrink: 0;
         }
@@ -337,28 +339,14 @@
             width: 100%; height: 100%; border-radius: 50%;
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            border: 1px solid var(--border);
-            background: var(--glass-strong);
-            color: var(--text-muted);
-            transition: all 0.4s var(--transition-curve);
-            position: relative; z-index: 2;
-        }
-        .send-btn i { transition: transform 0.4s var(--transition-curve); }
-        .send-btn.active {
+            border: 1px solid var(--primary);
+            background: var(--primary);
             color: white;
-            border-color: transparent;
-            box-shadow: 0 0 20px -5px var(--primary);
+            transition: all 0.3s var(--transition-curve);
         }
-        .send-btn.active:hover { transform: scale(1.1); }
-        .send-btn.active i { transform: rotate(-45deg) scale(0.9); }
-
-        #send-effect-canvas {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px; height: 200px;
-            pointer-events: none;
-            z-index: 1;
+        .send-btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 15px var(--primary);
         }
 
         /* Töltés és Visszajelzés */
@@ -718,7 +706,6 @@
                             aria-label="Üzenet beviteli mező"
                         ></textarea>
                         <div class="send-btn-container">
-                            <canvas id="send-effect-canvas"></canvas>
                             <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Üzenet küldése">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
@@ -749,44 +736,38 @@
               sendBtn = getEl('sendBtn');
         let welcomeScreen = getEl('welcomeScreen');
 
-        // --- Dinamikus Téma Kezelő (Szuper-lassú, CSS-alapú) ---
+        // --- Szinkronizált Téma Kezelő ---
         class DynamicThemeManager {
             constructor() {
                 this.root = document.documentElement;
                 this.auroraBlobs = document.querySelectorAll('.aurora-background .aurora');
 
-                this.palette = [
-                    { p: '#007AFF', s: '#39FF14' }, // Kék - Neon zöld
-                    { p: '#39FF14', s: '#007AFF' }, // Neon zöld - Kék
-                    { p: '#007AFF', s: '#FF2D55' }, // Kék - Pink
-                    { p: '#FF2D55', s: '#007AFF' }, // Pink - Kék
-                    { p: '#FF2D55', s: '#AF52DE' }, // Pink - Lila
-                    { p: '#39FF14', s: '#AF52DE' }, // Neon zöld - Lila
-                    { p: '#AF52DE', s: '#39FF14' }, // Lila - Neon zöld
-                ];
+                this.colors = ['#007AFF', '#39FF14', '#FF2D55', '#AF52DE'];
                 this.currentIndex = 0;
 
-                this.updateColors(this.palette[0]);
-                setInterval(this.cyclePalette, 30000);
+                this.updateColors(this.colors[0]);
+                setInterval(this.cyclePalette, 5000);
 
                 setTimeout(() => {
                     this.auroraBlobs.forEach(b => b.classList.add('visible'));
                 }, 500);
             }
 
-            updateColors = (palette) => {
-                const primaryRGB = this.hexToRgb(palette.p);
-                const secondaryRGB = this.hexToRgb(palette.s);
+            updateColors = (color) => {
+                const colorRGB = this.hexToRgb(color);
 
-                this.root.style.setProperty('--primary', palette.p);
-                this.root.style.setProperty('--secondary', palette.s);
-                this.root.style.setProperty('--accent', palette.s);
-                this.root.style.setProperty('--border-glow', `rgba(${primaryRGB}, 0.5)`);
-                this.root.style.setProperty('--primary-rgb', primaryRGB);
-                this.root.style.setProperty('--secondary-rgb', secondaryRGB);
+                // Minden elem ugyanazt a színt kapja
+                this.root.style.setProperty('--primary', color);
+                this.root.style.setProperty('--secondary', color);
+                this.root.style.setProperty('--accent', color);
+                this.root.style.setProperty('--border-glow', `rgba(${colorRGB}, 0.5)`);
+                this.root.style.setProperty('--primary-rgb', colorRGB);
+                this.root.style.setProperty('--secondary-rgb', colorRGB);
 
-                this.auroraBlobs[0].style.backgroundColor = palette.p;
-                this.auroraBlobs[1].style.backgroundColor = palette.s;
+                // Aurora háttér is ugyanazt a színt kapja
+                this.auroraBlobs.forEach(blob => {
+                    blob.style.backgroundColor = color;
+                });
             };
 
             hexToRgb = (hex) => {
@@ -800,9 +781,9 @@
             };
 
             cyclePalette = () => {
-                this.currentIndex = (this.currentIndex + 1) % this.palette.length;
-                const nextPalette = this.palette[this.currentIndex];
-                this.updateColors(nextPalette);
+                this.currentIndex = (this.currentIndex + 1) % this.colors.length;
+                const nextColor = this.colors[this.currentIndex];
+                this.updateColors(nextColor);
             };
         }
 
@@ -827,56 +808,7 @@
             }
         }
 
-        // --- ÚJ "BOMBA" KÜLDÉS GOMB EFFEKT ---
-        const sendCanvas = getEl('send-effect-canvas');
-        const sendCtx = sendCanvas.getContext('2d');
-        let sendParticles = [];
-
-        function triggerSendEffect() {
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-            const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim();
-
-            for (let i = 0; i < 40; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 5 + 2;
-                sendParticles.push({
-                    x: sendCanvas.width / 2,
-                    y: sendCanvas.height / 2,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    radius: Math.random() * 2 + 1,
-                    alpha: 1,
-                    color: Math.random() > 0.5 ? primaryColor : secondaryColor,
-                });
-            }
-            if (sendParticles.length > 0 && sendParticles.length < 41) {
-                animateSendParticles();
-            }
-        }
-
-        function animateSendParticles() {
-            sendCtx.clearRect(0, 0, sendCanvas.width, sendCanvas.height);
-            for (let i = 0; i < sendParticles.length; i++) {
-                const p = sendParticles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.alpha -= 0.025;
-
-                sendCtx.globalAlpha = p.alpha;
-                sendCtx.beginPath();
-                sendCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                sendCtx.fillStyle = p.color;
-                sendCtx.fill();
-            }
-
-            sendParticles = sendParticles.filter(p => p.alpha > 0);
-
-            if (sendParticles.length > 0) {
-                requestAnimationFrame(animateSendParticles);
-            } else {
-                sendCtx.clearRect(0, 0, sendCanvas.width, sendCanvas.height);
-            }
-        }
+        
 
         // --- ÚJ SVG LOGÓ ---
         function createSVGLogo() {
@@ -1023,7 +955,7 @@
             const message = messageInput.value.trim();
             if (!message || AppState.isTyping) return;
             
-            triggerSendEffect();
+            
             hideWelcome();
             
             if (AppState.isDeepSearchActive) {
