@@ -3534,12 +3534,20 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("JADED alkalmazás elindult - stabil verzió")
-
+    
     try:
         yield
+    except Exception as e:
+        logger.error(f"Alkalmazás hiba: {e}")
     finally:
-        # Shutdown - csak egyszerű cleanup
-        logger.info("JADED alkalmazás leáll")
+        # Shutdown - biztonságos cleanup
+        try:
+            logger.info("JADED alkalmazás leáll")
+            # Egyszerű cleanup
+            response_cache.clear()
+            chat_histories.clear()
+        except Exception as e:
+            logger.warning(f"Shutdown cleanup warning: {e}")
 
 # FastAPI app újradefiniálása a lifespan-nel
 app = FastAPI(
@@ -3818,13 +3826,13 @@ class ReplitDB:
 # Database inicializálás
 replit_db = ReplitDB()
 
-# ULTRA BACKEND TELJESÍTMÉNY - Maximális erő optimalizálás
+# STABIL BACKEND TELJESÍTMÉNY - Crash védelem
 chat_histories: Dict[str, List[Message]] = {}
 response_cache: Dict[str, Dict[str, Any]] = {}
-CACHE_EXPIRY = 7200   # 120 perces ULTRA cache - 2x hosszabb
-MAX_CHAT_HISTORY = 1000  # 5x NAGYOBB chat történet kapacitás  
-MAX_HISTORY_LENGTH = 200  # 4x NAGYOBB előzmény feldolgozás
-MEMORY_CLEANUP_INTERVAL = 600  # 10 percenként GYORSABB cleanup
+CACHE_EXPIRY = 3600   # 60 perces cache - stabilitás
+MAX_CHAT_HISTORY = 200  # Stabil chat történet kapacitás  
+MAX_HISTORY_LENGTH = 50  # Kisebb előzmény - stabilitás
+MEMORY_CLEANUP_INTERVAL = 300  # 5 percenként cleanup
 
 # ULTRA TELJESÍTMÉNY CACHE - 10x nagyobb kapacitás
 ULTRA_CACHE_SIZE = 50000  # 10x nagyobb cache limit
@@ -4003,51 +4011,89 @@ async def simple_memory_cleanup():
     return await advanced_memory_cleanup()
 
 def cleanup_memory():
-    """Ultra backend erő szinkron cleanup - maximalizált tűréshatárokkal"""
+    """Stabil szinkron cleanup - crash védelem"""
     try:
-        # Azonnali ultra memória felszabadítás
-        gc.collect()
+        # Konzervatív memória felszabadítás
+        if len(response_cache) > 1000:  # Alacsonyabb küszöb a stabilitásért
+            try:
+                gc.collect()
+            except:
+                pass
 
-        # ULTRA BACKEND ERŐ Cache méret ellenőrzés - 10x maximalizált küszöbök
-        if len(response_cache) > ULTRA_CACHE_SIZE:  # 50,000 elemig tűrés!
-            # Régi elemek törlése nagyobb batch-ekben
-            current_time = time.time()
-            expired = [k for k, v in response_cache.items() 
-                      if current_time - v.get('timestamp', 0) > CACHE_EXPIRY]
-            for key in expired[:5000]:  # 5x több elem törlése egyszerre - ULTRA batch
-                response_cache.pop(key, None)
+        # Stabil Cache méret ellenőrzés
+        if len(response_cache) > 1500:
+            try:
+                current_time = time.time()
+                expired = []
+                # Biztonságos iteráció
+                for k, v in list(response_cache.items())[:200]:
+                    try:
+                        if current_time - v.get('timestamp', 0) > CACHE_EXPIRY:
+                            expired.append(k)
+                    except:
+                        expired.append(k)
+                
+                # Kis batch törlés
+                for key in expired[:100]:
+                    try:
+                        response_cache.pop(key, None)
+                    except:
+                        pass
+            except Exception as cache_error:
+                logger.warning(f"Cache cleanup warning: {cache_error}")
 
-        # ULTRA Chat history tisztítás - 10x maximalizált küszöbök
-        if len(chat_histories) > MAX_CHAT_HISTORY * 10:  # 10x nagyobb tűrés - 10,000 user!
-            excess_users = list(chat_histories.keys())[:-MAX_CHAT_HISTORY]
-            for user in excess_users[:500]:  # Nagyobb user cleanup batch
-                chat_histories.pop(user, None)
-
-        # Ultra backend memória optimalizálás
-        if len(response_cache) > 25000:  # Köztes cleanup
-            gc.collect()  # Extra garbage collection
+        # Stabil Chat history tisztítás
+        if len(chat_histories) > 150:
+            try:
+                excess_users = list(chat_histories.keys())[:-100]
+                for user in excess_users[:20]:  # Kis batch
+                    try:
+                        chat_histories.pop(user, None)
+                    except:
+                        pass
+            except Exception as chat_error:
+                logger.warning(f"Chat cleanup warning: {chat_error}")
 
     except Exception as e:
-        logger.error(f"Ultra backend cleanup error: {e}")
+        logger.warning(f"Cleanup warning: {e}")
+        # Ne dobjon hibát - csak warning
 
-# Egyszerűsített cleanup - csak kérésre
+# Stabil cleanup - crash védelem
 async def simple_cleanup():
-    """Egyszerű cleanup csak nagy memóriahasználat esetén"""
+    """Stabil cleanup crash védelem"""
     try:
-        if len(response_cache) > 1000:
+        # Csak akkor tisztítunk, ha tényleg szükséges
+        if len(response_cache) > 2000:  # Magasabb küszöb
             current_time = time.time()
-            expired = [k for k, v in response_cache.items() 
-                      if current_time - v.get('timestamp', 0) > CACHE_EXPIRY]
-            for key in expired[:200]:
-                response_cache.pop(key, None)
+            expired = []
+            for k, v in list(response_cache.items())[:100]:  # Csak első 100 elem
+                try:
+                    if current_time - v.get('timestamp', 0) > CACHE_EXPIRY:
+                        expired.append(k)
+                except (KeyError, TypeError):
+                    expired.append(k)
+            
+            for key in expired[:50]:  # Kisebb batch
+                try:
+                    response_cache.pop(key, None)
+                except:
+                    pass
         
-        if len(chat_histories) > 100:
-            excess_users = list(chat_histories.keys())[:-50]
-            for user in excess_users[:25]:
-                chat_histories.pop(user, None)
+        # Chat history konzervatív tisztítás
+        if len(chat_histories) > 200:  # Magasabb küszöb
+            try:
+                excess_users = list(chat_histories.keys())[:-100]
+                for user in excess_users[:10]:  # Csak 10 user egyszerre
+                    try:
+                        chat_histories.pop(user, None)
+                    except:
+                        pass
+            except:
+                pass
                 
     except Exception as e:
         logger.error(f"Simple cleanup error: {e}")
+        # Ne dobjon hibát - csak log
 
 # --- Alpha Services definíciója ---
 ALPHA_SERVICES = {
@@ -6195,8 +6241,13 @@ async def deep_research(req: DeepResearchRequest):
         # === 4. VÉGSŐ SZINTÉZIS ÉS JELENTÉS GENERÁLÁS ===
         final_comprehensive_report = ""
 
-        elapsed_time = time.time() - start_time  
-        remaining_time = max(60, 240 - elapsed_time)
+        try:
+            elapsed_time = time.time() - start_time  
+            remaining_time = max(60, 240 - elapsed_time)
+        except Exception as time_error:
+            logger.warning(f"Time calculation error: {time_error}")
+            elapsed_time = 120
+            remaining_time = 120
 
         # Research state tracking
         research_state = {
