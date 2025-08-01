@@ -659,6 +659,7 @@
                             placeholder="Írj egy üzenetet..."
                             rows="1"
                             aria-label="Üzenet beviteli mező"
+                            style="resize: none; overflow: hidden; min-height: 40px; max-height: 120px;"
                         ></textarea>
                         <div class="send-btn-container">
                             <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Üzenet küldése">
@@ -871,29 +872,46 @@
         });
 
         function setupEventListeners() {
-            messageInput.addEventListener('input', () => {
-                if (messageInput.value.trim().length > 0) {
-                    sendBtn.classList.add('active');
-                } else {
-                    sendBtn.classList.remove('active');
-                }
-                messageInput.style.height = 'auto';
-                messageInput.style.height = `${Math.min(messageInput.scrollHeight, 120)}px`;
-            });
+            if (messageInput) {
+                messageInput.addEventListener('input', () => {
+                    if (messageInput.value.trim().length > 0) {
+                        sendBtn.classList.add('active');
+                    } else {
+                        sendBtn.classList.remove('active');
+                    }
+                    messageInput.style.height = 'auto';
+                    messageInput.style.height = `${Math.min(messageInput.scrollHeight, 120)}px`;
+                });
 
-            messageInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (!sendBtn.disabled) sendMessage();
-                }
-            });
-            sidebarOverlay.addEventListener('click', closeSidebar);
+                messageInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (!sendBtn.disabled) sendMessage();
+                    }
+                });
+            }
+            
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
         }
 
         // --- UI Kezelő Függvények ---
-        function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); }
-        function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); }
-        function toggleSidebar() { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); }
+        function openSidebar() { 
+            if (sidebar) sidebar.classList.add('open'); 
+            if (sidebarOverlay) sidebarOverlay.classList.add('active'); 
+        }
+        
+        function closeSidebar() { 
+            if (sidebar) sidebar.classList.remove('open'); 
+            if (sidebarOverlay) sidebarOverlay.classList.remove('active'); 
+        }
+        
+        function toggleSidebar() { 
+            if (sidebar) {
+                sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); 
+            }
+        }
         function hideWelcome() { if (welcomeScreen) { welcomeScreen.style.display = 'none'; welcomeScreen = null; } }
 
         function newChat() {
@@ -986,7 +1004,6 @@
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message || AppState.isTyping) return;
-
 
             hideWelcome();
 
