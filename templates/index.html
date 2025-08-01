@@ -288,16 +288,21 @@
 
         /* Beviteli mező */
         .input-area {
-            padding: 12px 16px; background: rgba(5, 2, 10, 0.5);
+            padding: 12px 16px; 
+            background: rgba(5, 2, 10, 0.5);
             backdrop-filter: blur(30px) saturate(150%);
             border-top: 1px solid var(--border);
-            position: sticky; bottom: 0; z-index: 50;
+            position: sticky; 
+            bottom: 0; 
+            z-index: 50;
             flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
         }
         @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
         .input-wrapper {
             width: 100%;
-            max-width: none;
+            max-width: 100%;
             margin: 0;
             display: flex;
             gap: 8px;
@@ -330,12 +335,22 @@
             transform: scale(1.1);
         }
         .message-input {
-            flex: 1; background: var(--glass-strong);
-            border: 1px solid var(--border); border-radius: 25px;
-            padding: 8px 16px; color: var(--text);
-            font-size: 0.9rem; resize: none; outline: none;
+            flex: 1; 
+            width: 100%;
+            background: var(--glass-strong);
+            border: 1px solid var(--border); 
+            border-radius: 25px;
+            padding: 8px 16px; 
+            color: var(--text);
+            font-size: 0.9rem; 
+            resize: none; 
+            outline: none;
             transition: all 0.3s var(--transition-curve);
-            min-height: 32px; max-height: 100px; font-family: inherit; line-height: 1.4;
+            min-height: 40px; 
+            max-height: 120px; 
+            font-family: inherit; 
+            line-height: 1.4;
+            box-sizing: border-box;
         }
 
         .send-btn-container {
@@ -919,6 +934,9 @@
                 sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); 
             }
         }
+
+        // Globálisan elérhető toggleSidebar függvény
+        window.toggleSidebar = toggleSidebar;
         function hideWelcome() { if (welcomeScreen) { welcomeScreen.style.display = 'none'; welcomeScreen = null; } }
 
         function newChat() {
