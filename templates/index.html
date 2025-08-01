@@ -795,13 +795,14 @@
                 this.root = document.documentElement;
                 this.auroraBlobs = document.querySelectorAll('.aurora-background .aurora');
 
-                // Csak az engedélyezett két-szín kombinációk
+                // Csak az engedélyezett két-szín kombinációk (TILOS: piros, narancs, sárga, barna)
                 this.colorPairs = [
-                    { primary: '#007AFF', secondary: '#39FF14' }, // kék-zöld
-                    { primary: '#39FF14', secondary: '#007AFF' }, // zöld-kék
-                    { primary: '#ea0f7c', secondary: '#007AFF' }, // pink-kék
-                    { primary: '#AF52DE', secondary: '#ea0f7c' }, // lila-pink
-                    { primary: '#AF52DE', secondary: '#007AFF' }  // lila-kék
+                    { primary: '#1565C0', secondary: '#39FF14' }, // sötétkék-neonfzöld
+                    { primary: '#007AFF', secondary: '#ea0f7c' }, // kék-pink
+                    { primary: '#ea0f7c', secondary: '#AF52DE' }, // pink-lila
+                    { primary: '#AF52DE', secondary: '#007AFF' }, // lila-kék
+                    { primary: '#007AFF', secondary: '#00E676' }, // kék-zöld
+                    { primary: '#00E676', secondary: '#FFFF00' }  // zöld-sárga (csak neon sárga, nem barna árnyalat)
                 ];
                 this.currentIndex = 0;
 
