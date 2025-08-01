@@ -373,37 +373,7 @@
             overflow: hidden;
         }
 
-        /* NATÍV iOS PWA GESTURES ÉS HAPTIC FEEDBACK */
-        /* Gesture context menu eltávolítva - nincs szükség rá */
-
-        /* NATÍV iOS FINGER GESTURE RENDSZER */
-
-        /* HAPTIC FEEDBACK INDIKÁTOR */
-        .haptic-indicator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, var(--primary)40, transparent);
-            border: 3px solid var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .haptic-indicator.active {
-            transform: translate(-50%, -50%) scale(1);
-            animation: hapticPulse 0.4s ease-out;
-        }
-
-        @keyframes hapticPulse {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
-        }
+        /* EGYSZERŰSÍTETT SIDEBAR GESTURE RENDSZER */
 
         
 
@@ -823,349 +793,52 @@
             }
         }
 
-        // --- NATÍV iOS GESTURE RENDSZER ---
-        class NativeGestureManager {
+        // --- EGYSZERŰ SIDEBAR GESTURE KEZELŐ ---
+        class SimpleSidebarGesture {
             constructor() {
-                this.touches = new Map();
-                this.gestureTrails = [];
-                this.hapticEnabled = true;
-                this.gesturesEnabled = true;
-                this.lastGesture = null;
-                this.gestureStartTime = 0;
-                this.setupGestureDetection();
-                this.createGestureElements();
+                this.setupSidebarGesture();
             }
 
-            setupGestureDetection() {
-                // Multi-touch gesture események
+            setupSidebarGesture() {
+                // Csak sidebar swipe gesture
                 document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
                 document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
                 document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-
-                // iOS-specifikus gesture események
-                document.addEventListener('gesturestart', this.handleGestureStart.bind(this), { passive: false });
-                document.addEventListener('gesturechange', this.handleGestureChange.bind(this), { passive: false });
-                document.addEventListener('gestureend', this.handleGestureEnd.bind(this), { passive: false });
-
-                // Billentyű kombinációk (külső billentyűzet)
-                document.addEventListener('keydown', this.handleKeyGesture.bind(this));
-            }
-
-            createGestureElements() {
-                // Gesture detector overlay
-                const detector = document.createElement('div');
-                detector.className = 'gesture-detector';
-                detector.id = 'gestureDetector';
-                document.body.appendChild(detector);
-
-                // Haptic feedback indikátor
-                const hapticIndicator = document.createElement('div');
-                hapticIndicator.className = 'haptic-indicator';
-                hapticIndicator.id = 'hapticIndicator';
-                document.body.appendChild(hapticIndicator);
-
-                
             }
 
             handleTouchStart(e) {
-                if (!this.gesturesEnabled) return;
-
-                this.gestureStartTime = Date.now();
-
-                // Minden érintés nyomon követése
-                for (let touch of e.changedTouches) {
-                    this.touches.set(touch.identifier, {
-                        startX: touch.clientX,
-                        startY: touch.clientY,
-                        currentX: touch.clientX,
-                        currentY: touch.clientY,
-                        startTime: Date.now()
-                    });
-
-                    
-                }
-
-                // Speciális gesture-ök detektálása
-                if (e.touches.length === 2) {
-                    this.handleTwoFingerStart(e);
-                } else if (e.touches.length === 3) {
-                    this.handleThreeFingerStart(e);
-                }
+                this.startX = e.touches[0].clientX;
+                this.startY = e.touches[0].clientY;
             }
 
             handleTouchMove(e) {
-                if (!this.gesturesEnabled) return;
-
-                // Touch pozíciók frissítése
-                for (let touch of e.changedTouches) {
-                    if (this.touches.has(touch.identifier)) {
-                        const touchData = this.touches.get(touch.identifier);
-                        touchData.currentX = touch.clientX;
-                        touchData.currentY = touch.clientY;
-
-                        
+                if (!this.startX || !this.startY) return;
+                
+                const currentX = e.touches[0].clientX;
+                const deltaX = currentX - this.startX;
+                
+                // Sidebar swipe detection
+                if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0 && this.startX < 50) {
+                        // Swipe right from left edge - open sidebar
+                        openSidebar();
+                        this.startX = null;
+                        this.startY = null;
+                    } else if (deltaX < -50 && sidebar.classList.contains('open')) {
+                        // Swipe left when sidebar is open - close sidebar
+                        closeSidebar();
+                        this.startX = null;
+                        this.startY = null;
                     }
-                }
-
-                // Multi-touch gesture-ök
-                if (e.touches.length === 2) {
-                    this.handleTwoFingerMove(e);
-                } else if (e.touches.length === 1) {
-                    this.handleSingleFingerMove(e);
                 }
             }
 
             handleTouchEnd(e) {
-                if (!this.gesturesEnabled) return;
-
-                const gestureDuration = Date.now() - this.gestureStartTime;
-
-                // Gesture elemzés és végrehajtás
-                for (let touch of e.changedTouches) {
-                    if (this.touches.has(touch.identifier)) {
-                        const touchData = this.touches.get(touch.identifier);
-                        this.analyzeGesture(touchData, gestureDuration);
-                        this.touches.delete(touch.identifier);
-                    }
-                }
-
-                
+                this.startX = null;
+                this.startY = null;
             }
 
-            handleTwoFingerStart(e) {
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-
-                this.twoFingerStartDistance = Math.hypot(
-                    touch2.clientX - touch1.clientX,
-                    touch2.clientY - touch1.clientY
-                );
-
-                this.triggerHaptic('light');
             }
-
-            handleTwoFingerMove(e) {
-                if (e.touches.length !== 2) return;
-
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-
-                const currentDistance = Math.hypot(
-                    touch2.clientX - touch1.clientX,
-                    touch2.clientY - touch1.clientY
-                );
-
-                // Pinch/Zoom detection
-                if (this.twoFingerStartDistance) {
-                    const scale = currentDistance / this.twoFingerStartDistance;
-
-                    if (scale < 0.8) {
-                        // Pinch in - Deep Search aktiválás
-                        this.executeGesture('pinch_in');
-                    } else if (scale > 1.2) {
-                        // Pinch out - Téma váltás
-                        this.executeGesture('pinch_out');
-                    }
-                }
-            }
-
-            handleThreeFingerStart(e) {
-                // Három ujjas gesture
-                this.triggerHaptic('medium');
-            }
-
-            handleSingleFingerMove(e) {
-                const touch = e.touches[0];
-                const touchData = this.touches.get(touch.identifier);
-
-                if (!touchData) return;
-
-                const deltaX = touch.clientX - touchData.startX;
-                const deltaY = touch.clientY - touchData.startY;
-                const distance = Math.hypot(deltaX, deltaY);
-
-                // Swipe detection
-                if (distance > 100) {
-                    const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-                    if (Math.abs(angle) < 30) {
-                        // Swipe right - Menü megnyitás
-                        this.executeGesture('swipe_right');
-                    } else if (Math.abs(angle - 180) < 30 || Math.abs(angle + 180) < 30) {
-                        // Swipe left - Menü bezárás
-                        this.executeGesture('swipe_left');
-                    } else if (angle < -60 && angle > -120) {
-                        // Swipe up - Scroll tetejére
-                        this.executeGesture('swipe_up');
-                    } else if (angle > 60 && angle < 120) {
-                        // Swipe down - Új chat
-                        this.executeGesture('swipe_down');
-                    }
-                }
-            }
-
-            handleGestureStart(e) {
-                e.preventDefault();
-                this.triggerHaptic('light');
-            }
-
-            handleGestureChange(e) {
-                // iOS natív gesture események (rotate, scale)
-                if (Math.abs(e.rotation) > 45) {
-                    this.executeGesture('rotate');
-                }
-            }
-
-            handleGestureEnd(e) {
-                // Gesture befejezése
-            }
-
-            handleKeyGesture(e) {
-                // Külső billentyűzet gesture-ök
-                if (e.metaKey || e.ctrlKey) {
-                    switch(e.key) {
-                        case 'n':
-                            e.preventDefault();
-                            this.executeGesture('new_chat');
-                            break;
-                        case 'd':
-                            e.preventDefault();
-                            this.executeGesture('deep_search');
-                            break;
-                        case 'm':
-                            e.preventDefault();
-                            this.executeGesture('toggle_menu');
-                            break;
-                    }
-                }
-            }
-
-            executeGesture(gestureType) {
-                if (this.lastGesture === gestureType && Date.now() - this.gestureStartTime < 300) {
-                    return; // Prevent double execution
-                }
-
-                this.lastGesture = gestureType;
-                this.triggerHaptic('medium');
-
-                switch(gestureType) {
-                    case 'swipe_right':
-                        openSidebar();
-                        break;
-                    case 'swipe_left':
-                        closeSidebar();
-                        break;
-                    case 'swipe_down':
-                        newChat();
-                        break;
-                    case 'swipe_up':
-                        scrollToTop();
-                        break;
-                    case 'pinch_in':
-                        activateDeepSearch();
-                        break;
-                    case 'pinch_out':
-                        cyclePalette();
-                        break;
-                    case 'rotate':
-                        toggleTheme();
-                        break;
-                    case 'new_chat':
-                        newChat();
-                        break;
-                    case 'deep_search':
-                        toggleDeepSearch();
-                        break;
-                    case 'toggle_menu':
-                        toggleSidebar();
-                        break;
-                }
-
-                this.showHapticIndicator();
-            }
-
-            
-
-            triggerHaptic(intensity = 'light') {
-                if (!this.hapticEnabled) return;
-
-                // iOS Haptic Feedback API
-                if (window.navigator && window.navigator.vibrate) {
-                    const patterns = {
-                        light: [10],
-                        medium: [20],
-                        heavy: [30, 10, 20]
-                    };
-                    window.navigator.vibrate(patterns[intensity] || patterns.light);
-                }
-
-                // Webkit Haptic (iOS Safari)
-                if (window.AudioContext || window.webkitAudioContext) {
-                    try {
-                        const AudioContext = window.AudioContext || window.webkitAudioContext;
-                        const audioContext = new AudioContext();
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-
-                        oscillator.frequency.value = intensity === 'heavy' ? 80 : 60;
-                        gainNode.gain.value = 0.01;
-
-                        oscillator.start();
-                        oscillator.stop(audioContext.currentTime + 0.05);
-                    } catch (e) {
-                        // Haptic nem támogatott
-                    }
-                }
-            }
-
-            showHapticIndicator() {
-                const indicator = document.getElementById('hapticIndicator');
-                indicator.classList.add('active');
-
-                setTimeout(() => indicator.classList.remove('active'), 400);
-            }
-
-            
-
-            analyzeGesture(touchData, duration) {
-                const deltaX = touchData.currentX - touchData.startX;
-                const deltaY = touchData.currentY - touchData.startY;
-                const distance = Math.hypot(deltaX, deltaY);
-
-                // Gesture típus meghatározása
-                if (distance < 10 && duration < 200) {
-                    // Quick tap
-                    this.executeGesture('quick_tap');
-                } else if (distance < 10 && duration > 800) {
-                    // Long press
-                    this.executeGesture('long_press');
-                }
-            }
-
-            toggleHaptic() {
-                this.hapticEnabled = !this.hapticEnabled;
-                this.triggerHaptic('medium');
-
-                // Vizuális feedback
-                const toggle = document.querySelector('.haptic-toggle');
-                if (toggle) {
-                    toggle.classList.toggle('active', this.hapticEnabled);
-                }
-            }
-
-            toggleGestures() {
-                this.gesturesEnabled = !this.gesturesEnabled;
-
-                // Vizuális feedback
-                const toggle = document.querySelector('.gesture-toggle');
-                if (toggle) {
-                    toggle.classList.toggle('active', this.gesturesEnabled);
-                }
-            }
-        }
 
         // Segédfüggvények a gesture-ökhöz
         function scrollToTop() {
@@ -1190,8 +863,8 @@
             setupEventListeners();
             loadServices();
 
-            // Natív iOS Gesture Manager inicializálása
-            window.gestureManager = new NativeGestureManager();
+            // Egyszerű sidebar gesture
+            window.gestureManager = new SimpleSidebarGesture();
 
             messageInput.focus();
         });
