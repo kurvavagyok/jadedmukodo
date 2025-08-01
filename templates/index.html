@@ -911,6 +911,22 @@
             return div.innerHTML;
         }
 
+        // Speciális funkciók
+                const researchCategory = document.createElement('div');
+                researchCategory.className = 'service-category';
+                researchCategory.innerHTML = `
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <div class="category-title"><i class="fas fa-search-plus" style="color: var(--secondary)"></i><span>Kutatási Funkciók</span></div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="category-services"><div>
+                        <div class="service-item" onclick="startDeepResearch()">
+                            <div class="service-icon" style="color: var(--secondary);"><i class="fas fa-microscope"></i></div>
+                            <div class="service-info"><h4>Deep Research</h4><p>Mélyreható kutatási elemzés</p></div>
+                        </div>
+                    </div></div>`;
+                sidebarContent.appendChild(researchCategory);
+
         // A modális ablakot és egyéb, nem változott funkciókat kezelő JS kód itt következne.
 
     </script>
