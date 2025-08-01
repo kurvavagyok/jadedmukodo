@@ -538,7 +538,47 @@
             }
         }
 
-        /* NATÍV iOS FINGER GESTURE RENDSZER - VIZUÁLIS ELEMEK NÉLKÜL */
+        /* NATÍV iOS FINGER GESTURE RENDSZER */
+        .gesture-detector {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .gesture-visual {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: scale(0);
+            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+            background: radial-gradient(circle, var(--primary)20, transparent 70%);
+        }
+
+        .gesture-visual.active {
+            transform: scale(1);
+            animation: gestureRipple 0.6s ease-out;
+        }
+
+        @keyframes gestureRipple {
+            0% { transform: scale(0.8); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .gesture-trail {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
 
         /* HAPTIC FEEDBACK INDIKÁTOR */
         .haptic-indicator {
@@ -1008,15 +1048,6 @@
                 }, 1000);
             }
 
-            updateColors(colorPair) {
-                this.root.style.setProperty('--primary', colorPair.primary);
-                this.root.style.setProperty('--secondary', colorPair.secondary);
-                this.root.style.setProperty('--accent', colorPair.primary);
-                this.root.style.setProperty('--border-glow', `rgba(${this.hexToRgb(colorPair.primary)}, 0.7)`);
-                this.root.style.setProperty('--primary-rgb', this.hexToRgb(colorPair.primary));
-                this.root.style.setProperty('--secondary-rgb', this.hexToRgb(colorPair.secondary));
-            }
-
             startSynchronizedAnimation = () => {
                 const animate = () => {
                     const currentTime = performance.now();
@@ -1169,8 +1200,49 @@
             }
 
             createGestureElements() {
-                // Gesture elemek kikapcsolva - nincs vizuális zavar
-                return;
+                // Gesture detector overlay
+                const detector = document.createElement('div');
+                detector.className = 'gesture-detector';
+                detector.id = 'gestureDetector';
+                document.body.appendChild(detector);
+
+                // Haptic feedback indikátor
+                const hapticIndicator = document.createElement('div');
+                hapticIndicator.className = 'haptic-indicator';
+                hapticIndicator.id = 'hapticIndicator';
+                document.body.appendChild(hapticIndicator);
+
+                // Gesture commands panel
+                const gestureCommands = document.createElement('div');
+                gestureCommands.className = 'gesture-commands';
+                gestureCommands.id = 'gestureCommands';
+                gestureCommands.innerHTML = `
+                    <div class="gesture-command">
+                        <div class="gesture-icon">👆</div>
+                        <span>Tap: Kiválasztás</span>
+                    </div>
+                    <div class="gesture-command">
+                        <div class="gesture-icon">✌️</div>
+                        <span>Két ujj: Scroll/Zoom</span>
+                    </div>
+                    <div class="gesture-command">
+                        <div class="gesture-icon">👋</div>
+                        <span>Swipe le: Új chat</span>
+                    </div>
+                    <div class="gesture-command">
+                        <div class="gesture-icon">👈</div>
+                        <span>Swipe jobbra: Menü</span>
+                    </div>
+                    <div class="gesture-command">
+                        <div class="gesture-icon">🤏</div>
+                        <span>Pinch: Deep Search</span>
+                    </div>
+                    <div class="gesture-command">
+                        <div class="gesture-icon">🔄</div>
+                        <span>Forgás: Témaváltás</span>
+                    </div>
+                `;
+                document.body.appendChild(gestureCommands);
             }
 
             handleTouchStart(e) {
@@ -1178,7 +1250,7 @@
                 
                 this.gestureStartTime = Date.now();
                 
-                // Minden érintés nyomon követése - vizuális feedback nélkül
+                // Minden érintés nyomon követése
                 for (let touch of e.changedTouches) {
                     this.touches.set(touch.identifier, {
                         startX: touch.clientX,
@@ -1187,6 +1259,9 @@
                         currentY: touch.clientY,
                         startTime: Date.now()
                     });
+                    
+                    // Vizuális feedback
+                    this.createGestureVisual(touch.clientX, touch.clientY);
                 }
 
                 // Speciális gesture-ök detektálása
@@ -1200,12 +1275,15 @@
             handleTouchMove(e) {
                 if (!this.gesturesEnabled) return;
 
-                // Touch pozíciók frissítése - trail nélkül
+                // Touch pozíciók frissítése
                 for (let touch of e.changedTouches) {
                     if (this.touches.has(touch.identifier)) {
                         const touchData = this.touches.get(touch.identifier);
                         touchData.currentX = touch.clientX;
                         touchData.currentY = touch.clientY;
+                        
+                        // Trail létrehozása
+                        this.createGestureTrail(touch.clientX, touch.clientY);
                     }
                 }
 
@@ -1391,13 +1469,29 @@
             }
 
             createGestureVisual(x, y) {
-                // Vizuális feedback kikapcsolva
-                return;
+                const visual = document.createElement('div');
+                visual.className = 'gesture-visual active';
+                visual.style.left = (x - 30) + 'px';
+                visual.style.top = (y - 30) + 'px';
+                
+                document.getElementById('gestureDetector').appendChild(visual);
+                
+                setTimeout(() => visual.remove(), 600);
             }
 
             createGestureTrail(x, y) {
-                // Trail feedback kikapcsolva
-                return;
+                const trail = document.createElement('div');
+                trail.className = 'gesture-trail';
+                trail.style.left = x + 'px';
+                trail.style.top = y + 'px';
+                
+                document.getElementById('gestureDetector').appendChild(trail);
+                this.gestureTrails.push(trail);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    setTimeout(() => trail.remove(), 300);
+                }, 100);
             }
 
             clearGestureTrails() {
