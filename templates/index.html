@@ -24,12 +24,18 @@
 
         :root {
             /* Dinamikus színek, JS által frissítve */
-            --primary: #0D47A1; /* Sötétkék */
-            --secondary: #009688; /* Türkiz */
-            --accent: #009688;
-            --border-glow: rgba(13, 71, 161, 0.5);
-            --primary-rgb: 13, 71, 161;
-            --secondary-rgb: 0, 150, 136;
+            --primary: #007AFF; /* Kék */
+            --secondary: #39FF14; /* Neon zöld */
+            --accent: #39FF14;
+            --border-glow: rgba(0, 122, 255, 0.5);
+            --primary-rgb: 0, 122, 255;
+            --secondary-rgb: 57, 255, 20;
+            
+            /* További színek */
+            --color-blue: #007AFF;
+            --color-neon-green: #39FF14;
+            --color-pink: #FF2D55;
+            --color-purple: #AF52DE;
 
             /* Statikus színek */
             --bg: #000000;
@@ -286,6 +292,32 @@
         }
         @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
         .input-wrapper { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
+        
+        /* Deep Search Toggle Button */
+        .deep-search-toggle {
+            width: 40px; height: 40px;
+            background: var(--glass-strong);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.9rem; color: var(--text-muted);
+            transition: all 0.3s var(--transition-curve);
+            flex-shrink: 0;
+        }
+        .deep-search-toggle:hover {
+            background: var(--glass-strong);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        .deep-search-toggle.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border-color: transparent;
+            box-shadow: 0 0 15px -3px var(--primary);
+        }
+        .deep-search-toggle.active:hover {
+            transform: scale(1.1);
+        }
         .message-input {
             flex: 1; background: var(--glass-strong);
             border: 1px solid var(--border); border-radius: var(--radius);
@@ -427,8 +459,140 @@
         }
 
         @keyframes deepSearchPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(13, 71, 161, 0.5); }
-            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(13, 71, 161, 0.8); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 122, 255, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(0, 122, 255, 0.8); }
+        }
+
+        /* Deep Search Progress Styles */
+        .research-indicator {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+            display: flex; flex-direction: column; gap: 16px;
+            min-width: 320px;
+        }
+
+        .research-header {
+            display: flex; align-items: center; gap: 12px;
+            justify-content: center;
+        }
+
+        .research-indicator .spinner {
+            width: 24px; height: 24px;
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        .research-indicator h4 { 
+            font-weight: 600; color: var(--text); font-size: 0.9rem; 
+            margin: 0; text-align: center;
+        }
+
+        .progress-section {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+
+        .progress-bar {
+            width: 100%; height: 6px;
+            background: var(--glass-strong);
+            border-radius: 3px; overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex; justify-content: space-between;
+            font-size: 0.75rem; color: var(--text-muted);
+        }
+
+        .phase-indicator {
+            text-align: center; font-size: 0.8rem;
+            color: var(--text); line-height: 1.4;
+        }
+
+        .phases-completed {
+            display: flex; justify-content: center; gap: 8px;
+        }
+
+        .phase-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--glass-strong);
+            transition: all 0.3s ease;
+        }
+
+        .phase-dot.completed {
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+        }
+
+        /* Research Completion Styles */
+        .research-complete {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .completion-stats h3 {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--secondary); margin-bottom: 12px;
+        }
+
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block; font-size: 1.5rem; font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem; color: var(--text-muted);
+        }
+
+        .document-preview {
+            background: var(--glass-strong);
+            border: 1px solid var(--border);
+            border-radius: 8px; padding: 12px;
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+
+        .document-preview:hover {
+            background: var(--glass-strong);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .document-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem;
+        }
+
+        .document-info h4 {
+            margin: 0 0 4px 0; font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .document-info p {
+            margin: 0; font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
         .gesture-tutorial {
@@ -543,6 +707,9 @@
 
                 <div class="input-area">
                     <div class="input-wrapper">
+                        <div class="deep-search-toggle" id="deepSearchToggle" onclick="toggleDeepSearch()" title="Deep Search aktiválása">
+                            <i class="fas fa-microscope"></i>
+                        </div>
                         <textarea 
                             class="message-input" 
                             id="messageInput" 
@@ -570,6 +737,7 @@
         const AppState = {
             isTyping: false,
             userId: 'user_' + Math.random().toString(36).substr(2, 9),
+            isDeepSearchActive: false,
         };
         const API_BASE_URL = '/api';
 
@@ -588,13 +756,13 @@
                 this.auroraBlobs = document.querySelectorAll('.aurora-background .aurora');
 
                 this.palette = [
-                    { p: '#0D47A1', s: '#009688' }, // Sötétkék - Türkiz
-                    { p: '#009688', s: '#0D47A1' }, // Türkiz - Sötétkék
-                    { p: '#0D47A1', s: '#C2185B' }, // Sötétkék - Élénk Pink
-                    { p: '#C2185B', s: '#0D47A1' }, // Élénk Pink - Sötétkék
-                    { p: '#C2185B', s: '#6A1B9A' }, // Élénk Pink - Mély Lila
-                    { p: '#009688', s: '#AFB42B' }, // Türkiz - Lime
-                    { p: '#AFB42B', s: '#009688' }, // Lime - Türkiz
+                    { p: '#007AFF', s: '#39FF14' }, // Kék - Neon zöld
+                    { p: '#39FF14', s: '#007AFF' }, // Neon zöld - Kék
+                    { p: '#007AFF', s: '#FF2D55' }, // Kék - Pink
+                    { p: '#FF2D55', s: '#007AFF' }, // Pink - Kék
+                    { p: '#FF2D55', s: '#AF52DE' }, // Pink - Lila
+                    { p: '#39FF14', s: '#AF52DE' }, // Neon zöld - Lila
+                    { p: '#AF52DE', s: '#39FF14' }, // Lila - Neon zöld
                 ];
                 this.currentIndex = 0;
 
@@ -836,26 +1004,77 @@
             chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
+        // --- Deep Search Toggle Functionality ---
+        function toggleDeepSearch() {
+            const toggle = getEl('deepSearchToggle');
+            AppState.isDeepSearchActive = !AppState.isDeepSearchActive;
+            
+            if (AppState.isDeepSearchActive) {
+                toggle.classList.add('active');
+                messageInput.placeholder = 'Deep Search kutatási téma...';
+            } else {
+                toggle.classList.remove('active');
+                messageInput.placeholder = 'Írj egy üzenetet...';
+            }
+        }
+
         // --- Üzenetküldés és Megjelenítés ---
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message || AppState.isTyping) return;
+            
             triggerSendEffect();
             hideWelcome();
-            addUserMessage(message);
-            messageInput.value = '';
-            messageInput.dispatchEvent(new Event('input'));
-            messageInput.style.height = 'auto';
-            showTypingIndicator();
-            try {
-                const data = await fetchAPI('/deep_discovery/chat', {
-                    method: 'POST',
-                    body: JSON.stringify({ message: message, user_id: AppState.userId })
-                });
-                hideTypingIndicator();
-                addAiMessage(data.response);
-            } catch (error) {
-                // Az error kezelése már a fetchAPI-ban megtörténik
+            
+            if (AppState.isDeepSearchActive) {
+                // Deep Search indítása
+                addUserMessage(`Deep Research indítva: ${message}`);
+                messageInput.value = '';
+                messageInput.dispatchEvent(new Event('input'));
+                messageInput.style.height = 'auto';
+                showResearchIndicator(message);
+                
+                // Deep Search deaktiválása küldés után
+                AppState.isDeepSearchActive = false;
+                getEl('deepSearchToggle').classList.remove('active');
+                messageInput.placeholder = 'Írj egy üzenetet...';
+                
+                try {
+                    const data = await fetchAPI('/deep_discovery/deep_research', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query: message, user_id: AppState.userId })
+                    });
+
+                    AppState.researchState = {
+                        query: data.query,
+                        documentContent: data.final_synthesis,
+                        sources: data.sources || [],
+                        totalSources: data.total_sources_found || 0
+                    };
+
+                    getEl('researchIndicator')?.remove();
+                    displayResearchCompletion();
+                } catch (error) {
+                    getEl('researchIndicator')?.remove();
+                }
+            } else {
+                // Normál chat üzenet
+                addUserMessage(message);
+                messageInput.value = '';
+                messageInput.dispatchEvent(new Event('input'));
+                messageInput.style.height = 'auto';
+                showTypingIndicator();
+                try {
+                    const data = await fetchAPI('/deep_discovery/chat', {
+                        method: 'POST',
+                        body: JSON.stringify({ message: message, user_id: AppState.userId })
+                    });
+                    hideTypingIndicator();
+                    addAiMessage(data.response);
+                } catch (error) {
+                    // Az error kezelése már a fetchAPI-ban megtörténik
+                }
             }
         }
 
@@ -911,21 +1130,136 @@
             return div.innerHTML;
         }
 
-        // Speciális funkciók
-                const researchCategory = document.createElement('div');
-                researchCategory.className = 'service-category';
-                researchCategory.innerHTML = `
-                    <div class="category-header" onclick="toggleCategory(this)">
-                        <div class="category-title"><i class="fas fa-search-plus" style="color: var(--secondary)"></i><span>Kutatási Funkciók</span></div>
-                        <i class="fas fa-chevron-down"></i>
+        // --- Deep Search Progress Indicator ---
+        function showResearchIndicator(query) {
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.className = 'message ai-message';
+            indicatorDiv.id = 'researchIndicator';
+            indicatorDiv.innerHTML = `
+                <div class="research-indicator">
+                    <div class="research-header">
+                        <div class="spinner"></div>
+                        <h4>Háromszoros AI Keresési Rendszer</h4>
                     </div>
-                    <div class="category-services"><div>
-                        <div class="service-item" onclick="startDeepResearch()">
-                            <div class="service-icon" style="color: var(--secondary);"><i class="fas fa-microscope"></i></div>
-                            <div class="service-info"><h4>Deep Research</h4><p>Mélyreható kutatási elemzés</p></div>
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                         </div>
-                    </div></div>`;
-                sidebarContent.appendChild(researchCategory);
+                        <div class="progress-text">
+                            <span id="progressPercent">0%</span>
+                            <span id="progressPhase">Inicializálás...</span>
+                        </div>
+                    </div>
+                    <div class="phase-indicator" id="phaseStatus">
+                        Keresési rendszer indítása...<br>
+                        Téma: <strong>"${escapeHtml(query)}"</strong>
+                    </div>
+                    <div class="phases-completed">
+                        <div class="phase-dot" id="phase1"></div>
+                        <div class="phase-dot" id="phase2"></div>
+                        <div class="phase-dot" id="phase3"></div>
+                        <div class="phase-dot" id="phase4"></div>
+                    </div>
+                </div>`;
+            messagesContainer.appendChild(indicatorDiv);
+            scrollToBottom();
+            simulateResearchProgress();
+        }
+
+        function simulateResearchProgress() {
+            const phases = [
+                { percent: 25, phase: 'Exa Search futtatása...', status: 'Internetes források keresése...', dot: 'phase1' },
+                { percent: 50, phase: 'Gemini Analysis...', status: 'Tartalom elemzése AI-val...', dot: 'phase2' },
+                { percent: 75, phase: 'OpenAI Research...', status: 'Mélyebb kutatási elemzés...', dot: 'phase3' },
+                { percent: 100, phase: 'Final Synthesis', status: 'Végső jelentés összeállítása...', dot: 'phase4' }
+            ];
+
+            let currentPhase = 0;
+            const interval = setInterval(() => {
+                if (currentPhase < phases.length) {
+                    const phase = phases[currentPhase];
+                    const progressFill = getEl('progressFill');
+                    const progressPercent = getEl('progressPercent');
+                    const progressPhase = getEl('progressPhase');
+                    const phaseStatus = getEl('phaseStatus');
+                    const phaseDot = getEl(phase.dot);
+
+                    if (progressFill) progressFill.style.width = phase.percent + '%';
+                    if (progressPercent) progressPercent.textContent = phase.percent + '%';
+                    if (progressPhase) progressPhase.textContent = phase.phase;
+                    if (phaseStatus) phaseStatus.innerHTML = phase.status;
+                    if (phaseDot) phaseDot.classList.add('completed');
+
+                    currentPhase++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 2000);
+        }
+
+        function displayResearchCompletion() {
+            const researchState = AppState.researchState;
+            if (!researchState) return;
+
+            const sourcesCount = researchState.sources ? researchState.sources.length : 0;
+            const contentLength = researchState.documentContent ? researchState.documentContent.length : 0;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            messageDiv.innerHTML = `
+                <div class="research-complete">
+                    <div class="completion-stats">
+                        <h3><i class="fas fa-check-circle"></i> Deep Research befejezve!</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number">${researchState.totalSources || sourcesCount}</span>
+                                <span class="stat-label">Forrás</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${Math.round(contentLength/1000)}k</span>
+                                <span class="stat-label">Karakter</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="document-preview" onclick="showDocumentViewer()">
+                        <div class="document-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="document-info">
+                            <h4>Részletes jelentés megtekintése</h4>
+                            <p>Kattints a teljes dokumentum megnyitásához</p>
+                        </div>
+                    </div>
+                </div>`;
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function showDocumentViewer() {
+            // Document viewer implementáció
+            console.log('Document viewer megnyitása...');
+        }
+
+        // Speciális funkciók
+        const researchCategory = document.createElement('div');
+        researchCategory.className = 'service-category';
+        researchCategory.innerHTML = `
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-title"><i class="fas fa-search-plus" style="color: var(--secondary)"></i><span>Kutatási Funkciók</span></div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="category-services"><div>
+                <div class="service-item" onclick="activateDeepSearch()">
+                    <div class="service-icon" style="color: var(--secondary);"><i class="fas fa-microscope"></i></div>
+                    <div class="service-info"><h4>Deep Research</h4><p>Mélyreható kutatási elemzés</p></div>
+                </div>
+            </div></div>`;
+
+        function activateDeepSearch() {
+            AppState.isDeepSearchActive = true;
+            getEl('deepSearchToggle').classList.add('active');
+            messageInput.placeholder = 'Deep Search kutatási téma...';
+            messageInput.focus();
+            closeSidebar();
+        }
 
         // A modális ablakot és egyéb, nem változott funkciókat kezelő JS kód itt következne.
 
