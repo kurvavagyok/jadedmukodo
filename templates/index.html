@@ -473,47 +473,7 @@
             100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
         }
 
-        /* GESTURE COMMAND PANEL */
-        .gesture-commands {
-            position: fixed;
-            bottom: 100px;
-            left: 20px;
-            right: 20px;
-            background: var(--surface);
-            backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 16px;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-            z-index: 1000;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .gesture-commands.show {
-            transform: translateY(0);
-        }
-
-        .gesture-command {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .gesture-command .gesture-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--glass);
-            border-radius: 6px;
-            font-size: 0.7rem;
-        }
+        
 
         /* iOS NATÍV SCROLL BEHAVIOR */
         body {
@@ -729,60 +689,7 @@
             color: var(--text-muted);
         }
 
-        .gesture-tutorial {
-            position: fixed;
-            bottom: 80px;
-            left: 20px;
-            background: var(--glass-strong);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            max-width: 200px;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .gesture-tutorial.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .haptic-toggle, .gesture-toggle {
-            position: fixed;
-            top: 120px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: var(--glass-strong);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .gesture-toggle {
-            top: 170px;
-        }
-
-        .haptic-toggle.active, .gesture-toggle.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-color: transparent;
-        }
-
-        .haptic-toggle:hover, .gesture-toggle:hover {
-            transform: scale(1.1);
-            border-color: var(--primary);
-        }
+        
     </style>
 </head>
 
@@ -892,14 +799,14 @@
                 this.colorPairs = [
                     { primary: '#007AFF', secondary: '#39FF14' }, // kék-zöld
                     { primary: '#39FF14', secondary: '#007AFF' }, // zöld-kék
-                    { primary: '#FF2D55', secondary: '#007AFF' }, // rózsaszín-kék
-                    { primary: '#AF52DE', secondary: '#FF2D55' }, // lila-rózsaszín
+                    { primary: '#ea0f7c', secondary: '#007AFF' }, // pink-kék
+                    { primary: '#AF52DE', secondary: '#ea0f7c' }, // lila-pink
                     { primary: '#AF52DE', secondary: '#007AFF' }  // lila-kék
                 ];
                 this.currentIndex = 0;
 
                 this.updateColors(this.colorPairs[0]);
-                setInterval(this.cyclePalette, 5000);
+                setInterval(this.cyclePalette, 90000);
 
                 setTimeout(() => {
                     this.auroraBlobs.forEach(b => b.classList.add('visible'));
@@ -1024,37 +931,7 @@
                 hapticIndicator.id = 'hapticIndicator';
                 document.body.appendChild(hapticIndicator);
 
-                // Gesture commands panel
-                const gestureCommands = document.createElement('div');
-                gestureCommands.className = 'gesture-commands';
-                gestureCommands.id = 'gestureCommands';
-                gestureCommands.innerHTML = `
-                    <div class="gesture-command">```html
-                        <div class="gesture-icon">👆</div>
-                        <span>Tap: Kiválasztás</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">✌️</div>
-                        <span>Két ujj: Scroll/Zoom</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">👋</div>
-                        <span>Swipe le: Új chat</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">👈</div>
-                        <span>Swipe jobbra: Menü</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">🤏</div>
-                        <span>Pinch: Deep Search</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">🔄</div>
-                        <span>Forgás: Témaváltás</span>
-                    </div>
-                `;
-                document.body.appendChild(gestureCommands);
+                
             }
 
             handleTouchStart(e) {
@@ -1072,8 +949,7 @@
                         startTime: Date.now()
                     });
 
-                    // Vizuális feedback
-                    //this.createGestureVisual(touch.clientX, touch.clientY);
+                    
                 }
 
                 // Speciális gesture-ök detektálása
@@ -1094,8 +970,7 @@
                         touchData.currentX = touch.clientX;
                         touchData.currentY = touch.clientY;
 
-                        // Trail létrehozása
-                        //this.createGestureTrail(touch.clientX, touch.clientY);
+                        
                     }
                 }
 
@@ -1121,8 +996,7 @@
                     }
                 }
 
-                // Cleanup
-                //setTimeout(() => this.clearGestureTrails(), 500);
+                
             }
 
             handleTwoFingerStart(e) {
@@ -1163,11 +1037,8 @@
             }
 
             handleThreeFingerStart(e) {
-                // Három ujjas gesture - Gesture commands megjelenítése
+                // Három ujjas gesture
                 this.triggerHaptic('medium');
-                this.showGestureCommands();
-
-                setTimeout(() => this.hideGestureCommands(), 3000);
             }
 
             handleSingleFingerMove(e) {
@@ -1280,39 +1151,7 @@
                 this.showHapticIndicator();
             }
 
-            /*createGestureVisual(x, y) {
-                const visual = document.createElement('div');
-                visual.className = 'gesture-visual active';
-                visual.style.left = (x - 30) + 'px';
-                visual.style.top = (y - 30) + 'px';
-
-                document.getElementById('gestureDetector').appendChild(visual);
-
-                setTimeout(() => visual.remove(), 600);
-            }
-
-            createGestureTrail(x, y) {
-                const trail = document.createElement('div');
-                trail.className = 'gesture-trail';
-                trail.style.left = x + 'px';
-                trail.style.top = y + 'px';
-
-                document.getElementById('gestureDetector').appendChild(trail);
-                this.gestureTrails.push(trail);
-
-                setTimeout(() => {
-                    trail.style.opacity = '0';
-                    setTimeout(() => trail.remove(), 300);
-                }, 100);
-            }
-
-            clearGestureTrails() {
-                this.gestureTrails.forEach(trail => {
-                    trail.style.opacity = '0';
-                    setTimeout(() => trail.remove(), 300);
-                });
-                this.gestureTrails = [];
-            }*/
+            
 
             triggerHaptic(intensity = 'light') {
                 if (!this.hapticEnabled) return;
@@ -1356,13 +1195,7 @@
                 setTimeout(() => indicator.classList.remove('active'), 400);
             }
 
-            showGestureCommands() {
-                document.getElementById('gestureCommands').classList.add('show');
-            }
-
-            hideGestureCommands() {
-                document.getElementById('gestureCommands').classList.remove('show');
-            }
+            
 
             analyzeGesture(touchData, duration) {
                 const deltaX = touchData.currentX - touchData.startX;
