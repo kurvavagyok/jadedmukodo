@@ -26,11 +26,11 @@
             /* Dinamikus színek - egyszerre változnak */
             --primary: #007AFF;
             --secondary: #007AFF;
-            --accent: #007AFF;
+            --accent: #ff69b4;
             --border-glow: rgba(0, 122, 255, 0.5);
             --primary-rgb: 0, 122, 255;
             --secondary-rgb: 0, 122, 255;
-            
+
             /* Egységes színpaletta */
             --color-blue: #007AFF;
             --color-neon-green: #39FF14;
@@ -296,7 +296,7 @@
         }
         @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
         .input-wrapper { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
-        
+
         /* Deep Search Toggle Button */
         .deep-search-toggle {
             width: 40px; height: 40px;
@@ -608,7 +608,8 @@
         .haptic-toggle, .gesture-toggle {
             position: fixed;
             top: 120px;
-            right: 20px;
+            right: 20px;```text
+// This is the complete code with all requested changes.
             width: 40px;
             height: 40px;
             background: var(--glass-strong);
@@ -636,6 +637,58 @@
         .haptic-toggle:hover, .gesture-toggle:hover {
             transform: scale(1.1);
             border-color: var(--primary);
+        }
+
+        /* Gradient Background Animation */
+        .gradient-bg {
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 400% 400%;
+            animation: gradientShift 45s ease-in-out infinite;
+        }
+
+        .pulse {
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .slide-in {
+            animation: slideIn 1.2s ease-out;
+        }
+
+        .float {
+            animation: float 12s ease-in-out infinite;
+        }
+
+        .shimmer {
+            animation: shimmer 8s linear infinite;
+        }
+
+        /* Keyframes for animations */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 25% 50%; }
+            50% { background-position: 50% 50%; }
+            75% { background-position: 75% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
     </style>
 </head>
@@ -816,7 +869,7 @@
             }
         }
 
-        
+
 
         // --- ÚJ SVG LOGÓ ---
         function createSVGLogo() {
@@ -948,7 +1001,7 @@
         function toggleDeepSearch() {
             const toggle = getEl('deepSearchToggle');
             AppState.isDeepSearchActive = !AppState.isDeepSearchActive;
-            
+
             if (AppState.isDeepSearchActive) {
                 toggle.classList.add('active');
                 messageInput.placeholder = 'Deep Search kutatási téma...';
@@ -962,10 +1015,10 @@
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message || AppState.isTyping) return;
-            
-            
+
+
             hideWelcome();
-            
+
             if (AppState.isDeepSearchActive) {
                 // Deep Search indítása
                 addUserMessage(`Deep Research indítva: ${message}`);
@@ -973,12 +1026,12 @@
                 messageInput.dispatchEvent(new Event('input'));
                 messageInput.style.height = 'auto';
                 showResearchIndicator(message);
-                
+
                 // Deep Search deaktiválása küldés után
                 AppState.isDeepSearchActive = false;
                 getEl('deepSearchToggle').classList.remove('active');
                 messageInput.placeholder = 'Írj egy üzenetet...';
-                
+
                 try {
                     const data = await fetchAPI('/deep_discovery/deep_research', {
                         method: 'POST',
@@ -1012,6 +1065,38 @@
                     });
                     hideTypingIndicator();
                     addAiMessage(data.response);
+
+                        // Titkos widget megjelenítése
+                        if (data.secret_widget) {
+                            // Widget HTML hozzáadása jelentés megnyitással
+                            const widgetHTML = `
+                                <div id="secretWidget" style="position: fixed; bottom: 20px; right: 20px; width: 280px; background: rgba(10, 10, 10, 0.9); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); backdrop-filter: blur(40px) saturate(180%); color: #f0f0f0; z-index: 10000; transition: all 0.3s ease;">
+                                    <button onclick="document.getElementById('secretWidget').remove()" style="position: absolute; top: 8px; right: 12px; background: none; border: none; color: #666; font-size: 18px; cursor: pointer; transition: color 0.3s ease;">&times;</button>
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                        <div style="width: 24px; height: 24px; background: linear-gradient(135deg, #ff69b4, #ff1493); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; animation: glow 2s ease-in-out infinite alternate;">🔐</div>
+                                        <span style="font-size: 14px; font-weight: 700; color: #ff69b4; letter-spacing: 0.5px;">Titkos Widget</span>
+                                    </div>
+                                    <p style="margin: 8px 0; font-size: 12px; color: #b8b8b8; line-height: 1.4;">Jelentések és titkos funkciók elérése:</p>
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <a href="https://kutyak.replit.app" target="_blank" style="display: block; background: linear-gradient(135deg, #ff69b4, #ff1493); border: none; border-radius: 8px; padding: 8px 12px; color: white; font-weight: 600; font-size: 11px; text-decoration: none; text-align: center; transition: all 0.3s ease; cursor: pointer;">🚀 Titkos Oldal</a>
+                                        <button onclick="openLatestReport()" style="display: block; background: linear-gradient(135deg, #4ecdc4, #44a08d); border: none; border-radius: 8px; padding: 8px 12px; color: white; font-weight: 600; font-size: 11px; text-align: center; transition: all 0.3s ease; cursor: pointer;">📊 Legutóbbi Jelentés</button>
+                                        <button onclick="showReportsList()" style="display: block; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; padding: 8px 12px; color: white; font-weight: 600; font-size: 11px; text-align: center; transition: all 0.3s ease; cursor: pointer;">📁 Jelentések Listája</button>
+                                    </div>
+                                    <style>
+                                        @keyframes glow {
+                                            from { box-shadow: 0 0 5px rgba(255, 105, 180, 0.5); }
+                                            to { box-shadow: 0 0 15px rgba(255, 105, 180, 0.8); }
+                                        }
+                                        #secretWidget:hover {
+                                            transform: translateY(-3px) scale(1.02);
+                                            box-shadow: 0 12px 40px rgba(255, 105, 180, 0.4);
+                                            border-color: rgba(255, 105, 180, 0.5);
+                                        }
+                                    </style>
+                                </div>
+                            `;
+                            document.body.insertAdjacentHTML('beforeend', widgetHTML);
+                        }
                 } catch (error) {
                     // Az error kezelése már a fetchAPI-ban megtörténik
                 }
@@ -1171,6 +1256,164 @@
                 </div>`;
             messagesContainer.appendChild(messageDiv);
             scrollToBottom();
+        }
+
+        // Document viewer for research reports
+        function openDocumentViewer(reportId) {
+            console.log('Document viewer megnyitása...');
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(10px);
+            `;
+
+            const container = document.createElement('div');
+            container.style.cssText = `
+                width: 90%;
+                max-width: 1200px;
+                height: 90%;
+                background: var(--surface);
+                border-radius: 16px;
+                border: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            `;
+
+            const header = document.createElement('div');
+            header.style.cssText = `
+                padding: 20px;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: var(--glass);
+            `;
+
+            header.innerHTML = `
+                <h2 style="margin: 0; color: var(--text);">📄 Kutatási Jelentés</h2>
+                <button onclick="this.closest('.modal-container').remove()" style="background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; padding: 5px;">&times;</button>
+            `;
+
+            const content = document.createElement('div');
+            content.style.cssText = `
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+                color: var(--text);
+                line-height: 1.6;
+            `;
+
+            content.innerHTML = '<div style="text-align: center; padding: 40px;">⏳ Jelentés betöltése...</div>';
+
+            container.appendChild(header);
+            container.appendChild(content);
+            modal.appendChild(container);
+            modal.className = 'modal-container';
+            document.body.appendChild(modal);
+
+            // Load report
+            fetch(`/api/research/${reportId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Convert markdown to HTML (basic)
+                        const htmlContent = data.report
+                            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                            .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                            .replace(/\*(.*)\*/g, '<em>$1</em>')
+                            .replace(/\n/g, '<br>');
+
+                        content.innerHTML = htmlContent;
+                    } else {
+                        content.innerHTML = '<div style="color: #ff6b6b; text-align: center; padding: 40px;">❌ Hiba a jelentés betöltésénél</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Report loading error:', error);
+                    content.innerHTML = '<div style="color: #ff6b6b; text-align: center; padding: 40px;">❌ Hiba a jelentés betöltésénél</div>';
+                });
+        }
+
+        // Widget jelentés megnyitó funkciók
+        function openLatestReport() {
+            // Get latest report ID from localStorage or make API call
+            const latestReportId = localStorage.getItem('latestReportId');
+            if (latestReportId) {
+                openDocumentViewer(latestReportId);
+            } else {
+                alert('Nincs elérhető jelentés. Indíts egy kutatást először!');
+            }
+        }
+
+        function showReportsList() {
+            // Create reports list modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(10px);
+            `;
+
+            const container = document.createElement('div');
+            container.style.cssText = `
+                width: 80%;
+                max-width: 800px;
+                height: 70%;
+                background: var(--surface);
+                border-radius: 16px;
+                border: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            `;
+
+            container.innerHTML = `
+                <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--glass);">
+                    <h2 style="margin: 0; color: var(--text);">📁 Kutatási Jelentések</h2>
+                    <button onclick="this.closest('div[style*=\\"position: fixed\\"]').remove()" style="background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; padding: 5px;">&times;</button>
+                </div>
+                <div style="flex: 1; padding: 20px; overflow-y: auto; color: var(--text);">
+                    <div style="text-align: center; padding: 40px;">
+                        <p>📋 Jelentések listázása fejlesztés alatt...</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Jelenleg az utolsó kutatás ID-jét használhatod a jelentés megnyitásához.</p>
+                        <button onclick="showReportIdInput()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 16px;">📎 Jelentés ID Megadása</button>
+                    </div>
+                </div>
+            `;
+
+            modal.appendChild(container);
+            document.body.appendChild(modal);
+        }
+
+        function showReportIdInput() {
+            const reportId = prompt('Add meg a jelentés ID-jét:');
+            if (reportId && reportId.trim()) {
+                // Close reports list modal
+                document.querySelector('div[style*="position: fixed"][style*="z-index: 10001"]')?.remove();
+                openDocumentViewer(reportId.trim());
+            }
         }
 
         function showDocumentViewer() {
