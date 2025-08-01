@@ -34,7 +34,7 @@
             /* Egységes színpaletta */
             --color-blue: #007AFF;
             --color-neon-green: #39FF14;
-            --color-pink: #FF2D55;
+            --color-pink: #F01F87;
             --color-purple: #AF52DE;
 
             /* Statikus színek */
@@ -48,7 +48,7 @@
             --radius: 20px;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             --transition-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-color-slow: 2s ease-in-out;
+            --transition-color-slow: 52s ease-in-out;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -78,22 +78,22 @@
             mix-blend-mode: screen;
             filter: blur(100px);
             opacity: 0;
-            transition: background-color var(--transition-color-slow), opacity 5s ease-in-out;
-            animation: pulse 20s ease-in-out infinite alternate;
+            transition: background-color var(--transition-color-slow), opacity 55s ease-in-out;
+            animation: pulse 120s ease-in-out infinite alternate;
         }
         .aurora.visible { opacity: 0.4; }
         .aurora.one {
             width: 70vmax; height: 70vmax;
             animation-name: move-one, pulse;
-            animation-duration: 1200s, 25s;
+            animation-duration: 1200s, 125s;
             animation-timing-function: linear, ease-in-out;
             animation-iteration-count: infinite, infinite;
             animation-direction: alternate, alternate;
         }
         .aurora.two {
-            width: 60vmax; height: 60vmax;
+            width: 24vmax; height: 35vmax;
             animation-name: move-two, pulse;
-            animation-duration: 1050s, 30s;
+            animation-duration: 1050s, 130s;
             animation-timing-function: linear, ease-in-out;
             animation-iteration-count: infinite, infinite;
             animation-direction: alternate, alternate;
@@ -121,7 +121,7 @@
         .start-btn {
             background-color: var(--accent);
             border-color: var(--accent);
-            transition: all 0.3s var(--transition-curve), background-color var(--transition-color-slow), border-color var(--transition-color-slow);
+            transition: all 90.3s var(--transition-curve), background-color var(--transition-color-slow), border-color var(--transition-color-slow);
         }
         .category-title i, .service-icon, .ai-message strong {
             color: var(--accent);
