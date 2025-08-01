@@ -1,0 +1,22 @@
+Hiányzó függőségkezelés:
+	•  Több külső könyvtár (pl. google.cloud, cerebras.cloud.sdk, openai) importálása try-except blokkokkal történik, de nincs egységes függőségkezelés (pl. requirements.txt vagy pipenv).
+	•  Nem minden importált modul van megfelelően inicializálva (pl. openai_client, gemini_25_pro, cerebras_client).
+2.  Nem definiált változók:
+	•  Több globális változó (pl. alphafold3_predictor, alphagenome_predictor, gcp_credentials) használata előzetes inicializálás nélkül, ami NameError-t okozhat.
+	•  Pl. if not alphafold3_predictor: az /api/alphafold3/protein_analysis végpontban, de a változó nincs garantáltan definiálva.
+3.  Hiányzó osztálydefiníciók:
+	•  Az AlphaGenomeMainPredictor, AlphaGenomeInterval, AlphaGenomeOrganism, AlphaGenomeOutputType, AlphaGenomeAggregationType osztályok használata, de a kódban nem láthatók ezek definíciói (valószínűleg külső modulban vannak, de ez nincs dokumentálva).
+4.  Nem implementált metódusok:
+	•  Több függvény (pl. analyze_missense_variants, comprehensive_protein_analysis) használata az alphafold3_predictor objektumon, de ezek nem láthatók a kódban, ami AttributeError-t okozhat.
+5.  Kódduplikáció:
+	•  Az importok kétszer szerepelnek (pl. import os a fájl elején és a Cerebras blokkban).
+	•  Hasonló validációs logika ismétlődik több végpontban (pl. szekvencia validálás az /api/alpha/genome és /api/alphafold3/sequence_validation végpontokban).
+6.  Hiányzó típusellenőrzések:
+	•  A FastAPI modellek (pl. AlphaFold3Request, AlphaGenomeRequest) nem mindig tartalmaznak típusellenőrzést vagy alapértelmezett értékeket, ami érvénytelen bemeneteket engedélyezhet.
+	•  Pl. sequences: Dict[str, str] az /api/alphafold3/sequence_validation végpontban nem korlátozza a kulcsokat érvényes szekvenciatípusokra.
+7.  Nem kezelt kivételek:
+	•  Számos try-except blokk általános Exception-t fog, ami elfedi a specifikus hibákat (pl. /api/alphafold3/protein_analysis).
+	•  Nincs részletes hibakezelés a biofizikai számításoknál (pl. _predict_structure_physics_based).
+8.  Teljesítményproblémák:
+	•  A _predict_structure_physics_based és hasonló metódusok nagy ciklusokat tartalmaznak NumPy műveletekkel, de nem optimalizáltak (pl. nincs vektorizáció).
+	•  Az energia minimalizálás (_energy_minimization) egyszerűsített, de számításigényes, és nincs párhuzamosítás.
