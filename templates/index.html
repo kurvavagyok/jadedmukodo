@@ -30,7 +30,7 @@
             --border-glow: rgba(0, 122, 255, 0.5);
             --primary-rgb: 0, 122, 255;
             --secondary-rgb: 0, 122, 255;
-            
+
             /* Egységes színpaletta */
             --color-blue: #007AFF;
             --color-neon-green: #39FF14;
@@ -249,7 +249,8 @@
         .messages-container { flex: 1; overflow-y: auto; padding: 16px; scroll-behavior: smooth; }
         .welcome-screen {
             text-align: center; max-width: 450px; margin: 0 auto;
-            padding: 30px 16px; display: flex; flex-direction: column;
+            padding: 30px 16px;```text
+ display: flex; flex-direction: column;
             align-items: center; justify-content: center; height: 100%;
             animation: fadeIn 1s var(--transition-curve);
         }
@@ -296,7 +297,7 @@
         }
         @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
         .input-wrapper { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
-        
+
         /* Deep Search Toggle Button */
         .deep-search-toggle {
             width: 40px; height: 40px;
@@ -572,11 +573,11 @@
             .header {
                 padding-top: max(8px, env(safe-area-inset-top));
             }
-            
+
             .input-area {
                 padding-bottom: max(12px, env(safe-area-inset-bottom));
             }
-            
+
             .sidebar {
                 padding-top: env(safe-area-inset-top);
                 height: 100vh;
@@ -1002,7 +1003,7 @@
             }
         }
 
-        
+
 
         // --- ÚJ SVG LOGÓ ---
         function createSVGLogo() {
@@ -1041,14 +1042,12 @@
                 document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
                 document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
                 document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-                
+
                 // iOS-specifikus gesture események
-                document.addEventListener('gesturestart', this.handleGestureStart.bind(this), { passive: false });
-                document.addEventListener('gesturechange', this.handleGestureChange.bind(this), { passive: false });
-                document.addEventListener('gestureend', this.handleGestureEnd.bind(this), { passive: false });
+                
 
                 // Billentyű kombinációk (külső billentyűzet)
-                document.addEventListener('keydown', this.handleKeyGesture.bind(this));
+                
             }
 
             createGestureElements() {
@@ -1069,40 +1068,16 @@
                 gestureCommands.className = 'gesture-commands';
                 gestureCommands.id = 'gestureCommands';
                 gestureCommands.innerHTML = `
-                    <div class="gesture-command">
-                        <div class="gesture-icon">👆</div>
-                        <span>Tap: Kiválasztás</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">✌️</div>
-                        <span>Két ujj: Scroll/Zoom</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">👋</div>
-                        <span>Swipe le: Új chat</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">👈</div>
-                        <span>Swipe jobbra: Menü</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">🤏</div>
-                        <span>Pinch: Deep Search</span>
-                    </div>
-                    <div class="gesture-command">
-                        <div class="gesture-icon">🔄</div>
-                        <span>Forgás: Témaváltás</span>
-                    </div>
+                    
+                    
                 `;
                 document.body.appendChild(gestureCommands);
             }
 
             handleTouchStart(e) {
                 if (!this.gesturesEnabled) return;
-                
-                this.gestureStartTime = Date.now();
-                
-                // Minden érintés nyomon követése
+
+                // Egyszerű érintés nyomon követése
                 for (let touch of e.changedTouches) {
                     this.touches.set(touch.identifier, {
                         startX: touch.clientX,
@@ -1111,16 +1086,6 @@
                         currentY: touch.clientY,
                         startTime: Date.now()
                     });
-                    
-                    // Vizuális feedback
-                    this.createGestureVisual(touch.clientX, touch.clientY);
-                }
-
-                // Speciális gesture-ök detektálása
-                if (e.touches.length === 2) {
-                    this.handleTwoFingerStart(e);
-                } else if (e.touches.length === 3) {
-                    this.handleThreeFingerStart(e);
                 }
             }
 
@@ -1133,17 +1098,7 @@
                         const touchData = this.touches.get(touch.identifier);
                         touchData.currentX = touch.clientX;
                         touchData.currentY = touch.clientY;
-                        
-                        // Trail létrehozása
-                        this.createGestureTrail(touch.clientX, touch.clientY);
                     }
-                }
-
-                // Multi-touch gesture-ök
-                if (e.touches.length === 2) {
-                    this.handleTwoFingerMove(e);
-                } else if (e.touches.length === 1) {
-                    this.handleSingleFingerMove(e);
                 }
             }
 
@@ -1151,13 +1106,17 @@
                 if (!this.gesturesEnabled) return;
 
                 const gestureDuration = Date.now() - this.gestureStartTime;
-                
+
                 // Gesture elemzés és végrehajtás
                 for (let touch of e.changedTouches) {
                     if (this.touches.has(touch.identifier)) {
                         const touchData = this.touches.get(touch.identifier);
                         this.analyzeGesture(touchData, gestureDuration);
                         this.touches.delete(touch.identifier);
+                         const deltaX = touchData.currentX - touchData.startX;
+                         if (deltaX > 100) {
+                            openSidebar();
+                         }
                     }
                 }
 
@@ -1165,169 +1124,16 @@
                 setTimeout(() => this.clearGestureTrails(), 500);
             }
 
-            handleTwoFingerStart(e) {
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-                
-                this.twoFingerStartDistance = Math.hypot(
-                    touch2.clientX - touch1.clientX,
-                    touch2.clientY - touch1.clientY
-                );
-                
-                this.triggerHaptic('light');
-            }
-
-            handleTwoFingerMove(e) {
-                if (e.touches.length !== 2) return;
-                
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-                
-                const currentDistance = Math.hypot(
-                    touch2.clientX - touch1.clientX,
-                    touch2.clientY - touch1.clientY
-                );
-                
-                // Pinch/Zoom detection
-                if (this.twoFingerStartDistance) {
-                    const scale = currentDistance / this.twoFingerStartDistance;
-                    
-                    if (scale < 0.8) {
-                        // Pinch in - Deep Search aktiválás
-                        this.executeGesture('pinch_in');
-                    } else if (scale > 1.2) {
-                        // Pinch out - Téma váltás
-                        this.executeGesture('pinch_out');
-                    }
-                }
-            }
-
-            handleThreeFingerStart(e) {
-                // Három ujjas gesture - Gesture commands megjelenítése
-                this.triggerHaptic('medium');
-                this.showGestureCommands();
-                
-                setTimeout(() => this.hideGestureCommands(), 3000);
-            }
-
-            handleSingleFingerMove(e) {
-                const touch = e.touches[0];
-                const touchData = this.touches.get(touch.identifier);
-                
-                if (!touchData) return;
-                
-                const deltaX = touch.clientX - touchData.startX;
-                const deltaY = touch.clientY - touchData.startY;
-                const distance = Math.hypot(deltaX, deltaY);
-                
-                // Swipe detection
-                if (distance > 100) {
-                    const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-                    
-                    if (Math.abs(angle) < 30) {
-                        // Swipe right - Menü megnyitás
-                        this.executeGesture('swipe_right');
-                    } else if (Math.abs(angle - 180) < 30 || Math.abs(angle + 180) < 30) {
-                        // Swipe left - Menü bezárás
-                        this.executeGesture('swipe_left');
-                    } else if (angle < -60 && angle > -120) {
-                        // Swipe up - Scroll tetejére
-                        this.executeGesture('swipe_up');
-                    } else if (angle > 60 && angle < 120) {
-                        // Swipe down - Új chat
-                        this.executeGesture('swipe_down');
-                    }
-                }
-            }
-
-            handleGestureStart(e) {
-                e.preventDefault();
-                this.triggerHaptic('light');
-            }
-
-            handleGestureChange(e) {
-                // iOS natív gesture események (rotate, scale)
-                if (Math.abs(e.rotation) > 45) {
-                    this.executeGesture('rotate');
-                }
-            }
-
-            handleGestureEnd(e) {
-                // Gesture befejezése
-            }
-
-            handleKeyGesture(e) {
-                // Külső billentyűzet gesture-ök
-                if (e.metaKey || e.ctrlKey) {
-                    switch(e.key) {
-                        case 'n':
-                            e.preventDefault();
-                            this.executeGesture('new_chat');
-                            break;
-                        case 'd':
-                            e.preventDefault();
-                            this.executeGesture('deep_search');
-                            break;
-                        case 'm':
-                            e.preventDefault();
-                            this.executeGesture('toggle_menu');
-                            break;
-                    }
-                }
-            }
-
-            executeGesture(gestureType) {
-                if (this.lastGesture === gestureType && Date.now() - this.gestureStartTime < 300) {
-                    return; // Prevent double execution
-                }
-                
-                this.lastGesture = gestureType;
-                this.triggerHaptic('medium');
-                
-                switch(gestureType) {
-                    case 'swipe_right':
-                        openSidebar();
-                        break;
-                    case 'swipe_left':
-                        closeSidebar();
-                        break;
-                    case 'swipe_down':
-                        newChat();
-                        break;
-                    case 'swipe_up':
-                        scrollToTop();
-                        break;
-                    case 'pinch_in':
-                        activateDeepSearch();
-                        break;
-                    case 'pinch_out':
-                        cyclePalette();
-                        break;
-                    case 'rotate':
-                        toggleTheme();
-                        break;
-                    case 'new_chat':
-                        newChat();
-                        break;
-                    case 'deep_search':
-                        toggleDeepSearch();
-                        break;
-                    case 'toggle_menu':
-                        toggleSidebar();
-                        break;
-                }
-                
-                this.showHapticIndicator();
-            }
+// Egyszerűsített gesture kezelés - csak haptic feedback
 
             createGestureVisual(x, y) {
                 const visual = document.createElement('div');
                 visual.className = 'gesture-visual active';
                 visual.style.left = (x - 30) + 'px';
                 visual.style.top = (y - 30) + 'px';
-                
+
                 document.getElementById('gestureDetector').appendChild(visual);
-                
+
                 setTimeout(() => visual.remove(), 600);
             }
 
@@ -1336,10 +1142,10 @@
                 trail.className = 'gesture-trail';
                 trail.style.left = x + 'px';
                 trail.style.top = y + 'px';
-                
+
                 document.getElementById('gestureDetector').appendChild(trail);
                 this.gestureTrails.push(trail);
-                
+
                 setTimeout(() => {
                     trail.style.opacity = '0';
                     setTimeout(() => trail.remove(), 300);
@@ -1356,7 +1162,7 @@
 
             triggerHaptic(intensity = 'light') {
                 if (!this.hapticEnabled) return;
-                
+
                 // iOS Haptic Feedback API
                 if (window.navigator && window.navigator.vibrate) {
                     const patterns = {
@@ -1366,7 +1172,7 @@
                     };
                     window.navigator.vibrate(patterns[intensity] || patterns.light);
                 }
-                
+
                 // Webkit Haptic (iOS Safari)
                 if (window.AudioContext || window.webkitAudioContext) {
                     try {
@@ -1374,13 +1180,13 @@
                         const audioContext = new AudioContext();
                         const oscillator = audioContext.createOscillator();
                         const gainNode = audioContext.createGain();
-                        
+
                         oscillator.connect(gainNode);
                         gainNode.connect(audioContext.destination);
-                        
+
                         oscillator.frequency.value = intensity === 'heavy' ? 80 : 60;
                         gainNode.gain.value = 0.01;
-                        
+
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.05);
                     } catch (e) {
@@ -1392,7 +1198,7 @@
             showHapticIndicator() {
                 const indicator = document.getElementById('hapticIndicator');
                 indicator.classList.add('active');
-                
+
                 setTimeout(() => indicator.classList.remove('active'), 400);
             }
 
@@ -1408,21 +1214,21 @@
                 const deltaX = touchData.currentX - touchData.startX;
                 const deltaY = touchData.currentY - touchData.startY;
                 const distance = Math.hypot(deltaX, deltaY);
-                
+
                 // Gesture típus meghatározása
                 if (distance < 10 && duration < 200) {
                     // Quick tap
-                    this.executeGesture('quick_tap');
+                    
                 } else if (distance < 10 && duration > 800) {
                     // Long press
-                    this.executeGesture('long_press');
+                    
                 }
             }
 
             toggleHaptic() {
                 this.hapticEnabled = !this.hapticEnabled;
                 this.triggerHaptic('medium');
-                
+
                 // Vizuális feedback
                 const toggle = document.querySelector('.haptic-toggle');
                 if (toggle) {
@@ -1432,7 +1238,7 @@
 
             toggleGestures() {
                 this.gesturesEnabled = !this.gesturesEnabled;
-                
+
                 // Vizuális feedback
                 const toggle = document.querySelector('.gesture-toggle');
                 if (toggle) {
@@ -1463,10 +1269,10 @@
             createSVGLogo();
             setupEventListeners();
             loadServices();
-            
+
             // Natív iOS Gesture Manager inicializálása
             window.gestureManager = new NativeGestureManager();
-            
+
             messageInput.focus();
         });
 
@@ -1572,7 +1378,7 @@
         function toggleDeepSearch() {
             const toggle = getEl('deepSearchToggle');
             AppState.isDeepSearchActive = !AppState.isDeepSearchActive;
-            
+
             if (AppState.isDeepSearchActive) {
                 toggle.classList.add('active');
                 messageInput.placeholder = 'Deep Search kutatási téma...';
@@ -1586,10 +1392,10 @@
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message || AppState.isTyping) return;
-            
-            
+
+
             hideWelcome();
-            
+
             if (AppState.isDeepSearchActive) {
                 // Deep Search indítása
                 addUserMessage(`Deep Research indítva: ${message}`);
@@ -1597,12 +1403,12 @@
                 messageInput.dispatchEvent(new Event('input'));
                 messageInput.style.height = 'auto';
                 showResearchIndicator(message);
-                
+
                 // Deep Search deaktiválása küldés után
                 AppState.isDeepSearchActive = false;
                 getEl('deepSearchToggle').classList.remove('active');
                 messageInput.placeholder = 'Írj egy üzenetet...';
-                
+
                 try {
                     const data = await fetchAPI('/deep_discovery/deep_research', {
                         method: 'POST',
@@ -1831,7 +1637,7 @@
                 try {
                     const registration = await navigator.serviceWorker.register('/sw.js');
                     console.log('🚀 Service Worker regisztrálva:', registration.scope);
-                    
+
                     // Update ellenőrzés
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -1858,7 +1664,7 @@
             // iOS Standalone mód detektálása
             const isStandalone = window.navigator.standalone || 
                                window.matchMedia('(display-mode: standalone)').matches;
-            
+
             if (isStandalone) {
                 document.body.classList.add('ios-standalone');
                 console.log('🍎 Natív iOS App módban fut');
@@ -1872,7 +1678,7 @@
 
             // iOS Keyboard resize fix
             window.addEventListener('resize', handleiOSKeyboard);
-            
+
             // iOS Status Bar színezés
             updateiOSStatusBar();
         }
@@ -1881,7 +1687,7 @@
             if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                 const windowHeight = window.innerHeight;
                 const screenHeight = screen.height;
-                
+
                 if (windowHeight < screenHeight * 0.75) {
                     // Billentyűzet megjelent
                     document.body.classList.add('keyboard-open');
@@ -1920,7 +1726,7 @@
                 gap: 12px;
                 animation: slideDown 0.3s ease;
             `;
-            
+
             notification.innerHTML = `
                 <div style="flex: 1;">
                     <div style="font-weight: 600; margin-bottom: 4px;">Új verzió elérhető</div>
@@ -1944,9 +1750,9 @@
                     padding: 4px;
                 ">×</button>
             `;
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => notification.remove(), 10000);
         }
 
@@ -1961,16 +1767,16 @@
                 from { transform: translateY(-100%); opacity: 0; }
                 to { transform: translateY(0); opacity: 1; }
             }
-            
+
             .keyboard-open .input-area {
                 position: fixed;
                 bottom: 0;
             }
-            
+
             .ios-standalone {
                 padding-top: env(safe-area-inset-top);
             }
-            
+
             .ios-standalone .header {
                 position: sticky;
                 top: env(safe-area-inset-top);
