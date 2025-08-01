@@ -30,7 +30,7 @@
             --border-glow: rgba(0, 122, 255, 0.5);
             --primary-rgb: 0, 122, 255;
             --secondary-rgb: 0, 122, 255;
-            
+
             /* Egységes színpaletta */
             --color-blue: #007AFF;
             --color-neon-green: #39FF14;
@@ -296,7 +296,7 @@
         }
         @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
         .input-wrapper { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
-        
+
         /* Deep Search Toggle Button */
         .deep-search-toggle {
             width: 40px; height: 40px;
@@ -445,46 +445,6 @@
         }
 
         /* NATÍV iOS FINGER GESTURE RENDSZER */
-        .gesture-detector {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        .gesture-visual {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: scale(0);
-            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
-            background: radial-gradient(circle, var(--primary)20, transparent 70%);
-        }
-
-        .gesture-visual.active {
-            transform: scale(1);
-            animation: gestureRipple 0.6s ease-out;
-        }
-
-        @keyframes gestureRipple {
-            0% { transform: scale(0.8); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        .gesture-trail {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
 
         /* HAPTIC FEEDBACK INDIKÁTOR */
         .haptic-indicator {
@@ -572,11 +532,11 @@
             .header {
                 padding-top: max(8px, env(safe-area-inset-top));
             }
-            
+
             .input-area {
                 padding-bottom: max(12px, env(safe-area-inset-bottom));
             }
-            
+
             .sidebar {
                 padding-top: env(safe-area-inset-top);
                 height: 100vh;
@@ -1002,7 +962,7 @@
             }
         }
 
-        
+
 
         // --- ÚJ SVG LOGÓ ---
         function createSVGLogo() {
@@ -1041,7 +1001,7 @@
                 document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
                 document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
                 document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-                
+
                 // iOS-specifikus gesture események
                 document.addEventListener('gesturestart', this.handleGestureStart.bind(this), { passive: false });
                 document.addEventListener('gesturechange', this.handleGestureChange.bind(this), { passive: false });
@@ -1069,7 +1029,7 @@
                 gestureCommands.className = 'gesture-commands';
                 gestureCommands.id = 'gestureCommands';
                 gestureCommands.innerHTML = `
-                    <div class="gesture-command">
+                    <div class="gesture-command">```html
                         <div class="gesture-icon">👆</div>
                         <span>Tap: Kiválasztás</span>
                     </div>
@@ -1099,9 +1059,9 @@
 
             handleTouchStart(e) {
                 if (!this.gesturesEnabled) return;
-                
+
                 this.gestureStartTime = Date.now();
-                
+
                 // Minden érintés nyomon követése
                 for (let touch of e.changedTouches) {
                     this.touches.set(touch.identifier, {
@@ -1111,9 +1071,9 @@
                         currentY: touch.clientY,
                         startTime: Date.now()
                     });
-                    
+
                     // Vizuális feedback
-                    this.createGestureVisual(touch.clientX, touch.clientY);
+                    //this.createGestureVisual(touch.clientX, touch.clientY);
                 }
 
                 // Speciális gesture-ök detektálása
@@ -1133,9 +1093,9 @@
                         const touchData = this.touches.get(touch.identifier);
                         touchData.currentX = touch.clientX;
                         touchData.currentY = touch.clientY;
-                        
+
                         // Trail létrehozása
-                        this.createGestureTrail(touch.clientX, touch.clientY);
+                        //this.createGestureTrail(touch.clientX, touch.clientY);
                     }
                 }
 
@@ -1151,7 +1111,7 @@
                 if (!this.gesturesEnabled) return;
 
                 const gestureDuration = Date.now() - this.gestureStartTime;
-                
+
                 // Gesture elemzés és végrehajtás
                 for (let touch of e.changedTouches) {
                     if (this.touches.has(touch.identifier)) {
@@ -1162,36 +1122,36 @@
                 }
 
                 // Cleanup
-                setTimeout(() => this.clearGestureTrails(), 500);
+                //setTimeout(() => this.clearGestureTrails(), 500);
             }
 
             handleTwoFingerStart(e) {
                 const touch1 = e.touches[0];
                 const touch2 = e.touches[1];
-                
+
                 this.twoFingerStartDistance = Math.hypot(
                     touch2.clientX - touch1.clientX,
                     touch2.clientY - touch1.clientY
                 );
-                
+
                 this.triggerHaptic('light');
             }
 
             handleTwoFingerMove(e) {
                 if (e.touches.length !== 2) return;
-                
+
                 const touch1 = e.touches[0];
                 const touch2 = e.touches[1];
-                
+
                 const currentDistance = Math.hypot(
                     touch2.clientX - touch1.clientX,
                     touch2.clientY - touch1.clientY
                 );
-                
+
                 // Pinch/Zoom detection
                 if (this.twoFingerStartDistance) {
                     const scale = currentDistance / this.twoFingerStartDistance;
-                    
+
                     if (scale < 0.8) {
                         // Pinch in - Deep Search aktiválás
                         this.executeGesture('pinch_in');
@@ -1206,24 +1166,24 @@
                 // Három ujjas gesture - Gesture commands megjelenítése
                 this.triggerHaptic('medium');
                 this.showGestureCommands();
-                
+
                 setTimeout(() => this.hideGestureCommands(), 3000);
             }
 
             handleSingleFingerMove(e) {
                 const touch = e.touches[0];
                 const touchData = this.touches.get(touch.identifier);
-                
+
                 if (!touchData) return;
-                
+
                 const deltaX = touch.clientX - touchData.startX;
                 const deltaY = touch.clientY - touchData.startY;
                 const distance = Math.hypot(deltaX, deltaY);
-                
+
                 // Swipe detection
                 if (distance > 100) {
                     const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-                    
+
                     if (Math.abs(angle) < 30) {
                         // Swipe right - Menü megnyitás
                         this.executeGesture('swipe_right');
@@ -1280,10 +1240,10 @@
                 if (this.lastGesture === gestureType && Date.now() - this.gestureStartTime < 300) {
                     return; // Prevent double execution
                 }
-                
+
                 this.lastGesture = gestureType;
                 this.triggerHaptic('medium');
-                
+
                 switch(gestureType) {
                     case 'swipe_right':
                         openSidebar();
@@ -1316,18 +1276,18 @@
                         toggleSidebar();
                         break;
                 }
-                
+
                 this.showHapticIndicator();
             }
 
-            createGestureVisual(x, y) {
+            /*createGestureVisual(x, y) {
                 const visual = document.createElement('div');
                 visual.className = 'gesture-visual active';
                 visual.style.left = (x - 30) + 'px';
                 visual.style.top = (y - 30) + 'px';
-                
+
                 document.getElementById('gestureDetector').appendChild(visual);
-                
+
                 setTimeout(() => visual.remove(), 600);
             }
 
@@ -1336,10 +1296,10 @@
                 trail.className = 'gesture-trail';
                 trail.style.left = x + 'px';
                 trail.style.top = y + 'px';
-                
+
                 document.getElementById('gestureDetector').appendChild(trail);
                 this.gestureTrails.push(trail);
-                
+
                 setTimeout(() => {
                     trail.style.opacity = '0';
                     setTimeout(() => trail.remove(), 300);
@@ -1352,11 +1312,11 @@
                     setTimeout(() => trail.remove(), 300);
                 });
                 this.gestureTrails = [];
-            }
+            }*/
 
             triggerHaptic(intensity = 'light') {
                 if (!this.hapticEnabled) return;
-                
+
                 // iOS Haptic Feedback API
                 if (window.navigator && window.navigator.vibrate) {
                     const patterns = {
@@ -1366,7 +1326,7 @@
                     };
                     window.navigator.vibrate(patterns[intensity] || patterns.light);
                 }
-                
+
                 // Webkit Haptic (iOS Safari)
                 if (window.AudioContext || window.webkitAudioContext) {
                     try {
@@ -1374,13 +1334,13 @@
                         const audioContext = new AudioContext();
                         const oscillator = audioContext.createOscillator();
                         const gainNode = audioContext.createGain();
-                        
+
                         oscillator.connect(gainNode);
                         gainNode.connect(audioContext.destination);
-                        
+
                         oscillator.frequency.value = intensity === 'heavy' ? 80 : 60;
                         gainNode.gain.value = 0.01;
-                        
+
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.05);
                     } catch (e) {
@@ -1392,7 +1352,7 @@
             showHapticIndicator() {
                 const indicator = document.getElementById('hapticIndicator');
                 indicator.classList.add('active');
-                
+
                 setTimeout(() => indicator.classList.remove('active'), 400);
             }
 
@@ -1408,7 +1368,7 @@
                 const deltaX = touchData.currentX - touchData.startX;
                 const deltaY = touchData.currentY - touchData.startY;
                 const distance = Math.hypot(deltaX, deltaY);
-                
+
                 // Gesture típus meghatározása
                 if (distance < 10 && duration < 200) {
                     // Quick tap
@@ -1422,7 +1382,7 @@
             toggleHaptic() {
                 this.hapticEnabled = !this.hapticEnabled;
                 this.triggerHaptic('medium');
-                
+
                 // Vizuális feedback
                 const toggle = document.querySelector('.haptic-toggle');
                 if (toggle) {
@@ -1432,7 +1392,7 @@
 
             toggleGestures() {
                 this.gesturesEnabled = !this.gesturesEnabled;
-                
+
                 // Vizuális feedback
                 const toggle = document.querySelector('.gesture-toggle');
                 if (toggle) {
@@ -1463,10 +1423,10 @@
             createSVGLogo();
             setupEventListeners();
             loadServices();
-            
+
             // Natív iOS Gesture Manager inicializálása
             window.gestureManager = new NativeGestureManager();
-            
+
             messageInput.focus();
         });
 
@@ -1572,7 +1532,7 @@
         function toggleDeepSearch() {
             const toggle = getEl('deepSearchToggle');
             AppState.isDeepSearchActive = !AppState.isDeepSearchActive;
-            
+
             if (AppState.isDeepSearchActive) {
                 toggle.classList.add('active');
                 messageInput.placeholder = 'Deep Search kutatási téma...';
@@ -1586,10 +1546,10 @@
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message || AppState.isTyping) return;
-            
-            
+
+
             hideWelcome();
-            
+
             if (AppState.isDeepSearchActive) {
                 // Deep Search indítása
                 addUserMessage(`Deep Research indítva: ${message}`);
@@ -1597,12 +1557,12 @@
                 messageInput.dispatchEvent(new Event('input'));
                 messageInput.style.height = 'auto';
                 showResearchIndicator(message);
-                
+
                 // Deep Search deaktiválása küldés után
                 AppState.isDeepSearchActive = false;
                 getEl('deepSearchToggle').classList.remove('active');
                 messageInput.placeholder = 'Írj egy üzenetet...';
-                
+
                 try {
                     const data = await fetchAPI('/deep_discovery/deep_research', {
                         method: 'POST',
@@ -1831,7 +1791,7 @@
                 try {
                     const registration = await navigator.serviceWorker.register('/sw.js');
                     console.log('🚀 Service Worker regisztrálva:', registration.scope);
-                    
+
                     // Update ellenőrzés
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -1858,7 +1818,7 @@
             // iOS Standalone mód detektálása
             const isStandalone = window.navigator.standalone || 
                                window.matchMedia('(display-mode: standalone)').matches;
-            
+
             if (isStandalone) {
                 document.body.classList.add('ios-standalone');
                 console.log('🍎 Natív iOS App módban fut');
@@ -1872,7 +1832,7 @@
 
             // iOS Keyboard resize fix
             window.addEventListener('resize', handleiOSKeyboard);
-            
+
             // iOS Status Bar színezés
             updateiOSStatusBar();
         }
@@ -1881,7 +1841,7 @@
             if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                 const windowHeight = window.innerHeight;
                 const screenHeight = screen.height;
-                
+
                 if (windowHeight < screenHeight * 0.75) {
                     // Billentyűzet megjelent
                     document.body.classList.add('keyboard-open');
@@ -1920,7 +1880,7 @@
                 gap: 12px;
                 animation: slideDown 0.3s ease;
             `;
-            
+
             notification.innerHTML = `
                 <div style="flex: 1;">
                     <div style="font-weight: 600; margin-bottom: 4px;">Új verzió elérhető</div>
@@ -1944,9 +1904,9 @@
                     padding: 4px;
                 ">×</button>
             `;
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => notification.remove(), 10000);
         }
 
@@ -1961,16 +1921,16 @@
                 from { transform: translateY(-100%); opacity: 0; }
                 to { transform: translateY(0); opacity: 1; }
             }
-            
+
             .keyboard-open .input-area {
                 position: fixed;
                 bottom: 0;
             }
-            
+
             .ios-standalone {
                 padding-top: env(safe-area-inset-top);
             }
-            
+
             .ios-standalone .header {
                 position: sticky;
                 top: env(safe-area-inset-top);
