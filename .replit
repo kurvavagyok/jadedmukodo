@@ -31,3 +31,6 @@ run = ["sh", "-c", "python main.py"]
 
 [nix]
 packages = ["borgbackup", "glibcLocales", "libxcrypt"]
+
+[objectStorage]
+defaultBucketID = "replit-objstore-4dc0f9fd-301b-4ccb-b8df-02c4d1d94e4d"
