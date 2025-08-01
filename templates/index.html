@@ -295,7 +295,14 @@
             flex-shrink: 0;
         }
         @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
-        .input-wrapper { max-width: 1000px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
+        .input-wrapper {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
 
         /* Deep Search Toggle Button */
         .deep-search-toggle {
@@ -890,7 +897,7 @@
                     }
                 });
             }
-            
+
             if (sidebarOverlay) {
                 sidebarOverlay.addEventListener('click', closeSidebar);
             }
@@ -901,12 +908,12 @@
             if (sidebar) sidebar.classList.add('open'); 
             if (sidebarOverlay) sidebarOverlay.classList.add('active'); 
         }
-        
+
         function closeSidebar() { 
             if (sidebar) sidebar.classList.remove('open'); 
             if (sidebarOverlay) sidebarOverlay.classList.remove('active'); 
         }
-        
+
         function toggleSidebar() { 
             if (sidebar) {
                 sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); 
@@ -1015,7 +1022,7 @@
                 messageInput.style.height = 'auto';
                 showResearchIndicator(message);
 
-                // Deep Search deaktiválása küldés után
+                                // Deep Search deaktiválása küldés után
                 AppState.isDeepSearchActive = false;
                 getEl('deepSearchToggle').classList.remove('active');
                 messageInput.placeholder = 'Írj egy üzenetet...';
