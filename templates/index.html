@@ -48,7 +48,7 @@
             --radius: 20px;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             --transition-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-color-slow: 90s ease-in-out;
+            --transition-color-slow: 2s ease-in-out;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -63,7 +63,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 90 másodperces szinkronizált Aurora háttér - minden egyszerre változik */
+        /* Szuper-lassú, lebegő Aurora háttér */
         .aurora-background {
             position: fixed;
             top: 0; left: 0;
@@ -74,127 +74,33 @@
         }
         .aurora {
             position: absolute;
+            border-radius: 50%;
             mix-blend-mode: screen;
-            filter: blur(120px);
+            filter: blur(100px);
             opacity: 0;
-            transition: background-color 90s ease-in-out, opacity 90s ease-in-out;
-            animation: aurora-float 90s ease-in-out infinite, aurora-pulse 90s ease-in-out infinite, aurora-shimmer 90s linear infinite;
+            transition: background-color var(--transition-color-slow), opacity 5s ease-in-out;
+            animation: pulse 20s ease-in-out infinite alternate;
         }
-        .aurora.visible { opacity: 0.6; }
+        .aurora.visible { opacity: 0.4; }
         .aurora.one {
-            width: 80vmax; height: 80vmax;
-            border-radius: 60% 40% 30% 70% / 40% 60% 70% 30%;
-            animation-name: aurora-float-one, aurora-pulse, aurora-shimmer, aurora-morph-one;
-            animation-duration: 90s, 90s, 90s, 90s;
-            animation-timing-function: ease-in-out, ease-in-out, linear, ease-in-out;
-            animation-iteration-count: infinite, infinite, infinite, infinite;
-            animation-direction: alternate, alternate, normal, alternate;
+            width: 70vmax; height: 70vmax;
+            animation-name: move-one, pulse;
+            animation-duration: 1200s, 25s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            animation-direction: alternate, alternate;
         }
         .aurora.two {
-            width: 75vmax; height: 75vmax;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            animation-name: aurora-float-two, aurora-pulse, aurora-shimmer, aurora-morph-two;
-            animation-duration: 90s, 90s, 90s, 90s;
-            animation-timing-function: ease-in-out, ease-in-out, linear, ease-in-out;
-            animation-iteration-count: infinite, infinite, infinite, infinite;
-            animation-direction: alternate, alternate, normal, alternate;
+            width: 60vmax; height: 60vmax;
+            animation-name: move-two, pulse;
+            animation-duration: 1050s, 30s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            animation-direction: alternate, alternate;
         }
-        .aurora.three {
-            width: 85vmax; height: 85vmax;
-            border-radius: 70% 30% 40% 60% / 30% 70% 60% 40%;
-            animation-name: aurora-float-three, aurora-pulse, aurora-shimmer, aurora-morph-three;
-            animation-duration: 90s, 90s, 90s, 90s;
-            animation-timing-function: ease-in-out, ease-in-out, linear, ease-in-out;
-            animation-iteration-count: infinite, infinite, infinite, infinite;
-            animation-direction: alternate, alternate, normal, alternate;
-        }
-        .aurora.four {
-            width: 70vmax; height: 70vmax;
-            border-radius: 40% 60% 60% 40% / 70% 60% 40% 30%;
-            animation-name: aurora-float-four, aurora-pulse, aurora-shimmer, aurora-morph-four;
-            animation-duration: 90s, 90s, 90s, 90s;
-            animation-timing-function: ease-in-out, ease-in-out, linear, ease-in-out;
-            animation-iteration-count: infinite, infinite, infinite, infinite;
-            animation-direction: alternate, alternate, normal, alternate;
-        }
-
-        /* 90 másodperces szinkronizált lebegő mozgások */
-        @keyframes aurora-float-one {
-            0% { transform: translate(-30vw, -40vh) scale(0.8) rotate(0deg); }
-            25% { transform: translate(60vw, 20vh) scale(1.2) rotate(90deg); }
-            50% { transform: translate(80vw, 100vh) scale(0.9) rotate(180deg); }
-            75% { transform: translate(-10vw, 80vh) scale(1.1) rotate(270deg); }
-            100% { transform: translate(-30vw, -40vh) scale(0.8) rotate(360deg); }
-        }
-        @keyframes aurora-float-two {
-            0% { transform: translate(100vw, 120vh) scale(1.0) rotate(0deg); }
-            25% { transform: translate(-20vw, 60vh) scale(0.7) rotate(90deg); }
-            50% { transform: translate(40vw, -30vh) scale(1.3) rotate(180deg); }
-            75% { transform: translate(70vw, 40vh) scale(0.9) rotate(270deg); }
-            100% { transform: translate(100vw, 120vh) scale(1.0) rotate(360deg); }
-        }
-        @keyframes aurora-float-three {
-            0% { transform: translate(50vw, -50vh) scale(1.1) rotate(0deg); }
-            25% { transform: translate(-40vw, 30vh) scale(0.8) rotate(90deg); }
-            50% { transform: translate(90vw, 70vh) scale(1.2) rotate(180deg); }
-            75% { transform: translate(20vw, 110vh) scale(0.9) rotate(270deg); }
-            100% { transform: translate(50vw, -50vh) scale(1.1) rotate(360deg); }
-        }
-        @keyframes aurora-float-four {
-            0% { transform: translate(-50vw, 80vh) scale(0.9) rotate(0deg); }
-            25% { transform: translate(30vw, -20vh) scale(1.1) rotate(90deg); }
-            50% { transform: translate(110vw, 50vh) scale(0.8) rotate(180deg); }
-            75% { transform: translate(-10vw, 90vh) scale(1.0) rotate(270deg); }
-            100% { transform: translate(-50vw, 80vh) scale(0.9) rotate(360deg); }
-        }
-
-        /* 90 másodperces szinkronizált pulzálás */
-        @keyframes aurora-pulse {
-            0% { opacity: 0.2; filter: blur(100px) brightness(0.8); }
-            25% { opacity: 0.8; filter: blur(150px) brightness(1.2); }
-            50% { opacity: 0.4; filter: blur(120px) brightness(1.0); }
-            75% { opacity: 0.7; filter: blur(180px) brightness(1.1); }
-            100% { opacity: 0.2; filter: blur(100px) brightness(0.8); }
-        }
-
-        /* 90 másodperces szinkronizált csillogás */
-        @keyframes aurora-shimmer {
-            0% { box-shadow: 0 0 100px rgba(0, 122, 255, 0.3), inset 0 0 50px rgba(57, 255, 20, 0.2); }
-            25% { box-shadow: 0 0 200px rgba(57, 255, 20, 0.5), inset 0 0 100px rgba(255, 45, 85, 0.3); }
-            50% { box-shadow: 0 0 150px rgba(255, 45, 85, 0.4), inset 0 0 75px rgba(175, 82, 222, 0.3); }
-            75% { box-shadow: 0 0 180px rgba(175, 82, 222, 0.6), inset 0 0 90px rgba(0, 122, 255, 0.2); }
-            100% { box-shadow: 0 0 100px rgba(0, 122, 255, 0.3), inset 0 0 50px rgba(57, 255, 20, 0.2); }
-        }
-
-        /* 90 másodperces szinkronizált forma változások */
-        @keyframes aurora-morph-one {
-            0% { border-radius: 60% 40% 30% 70% / 40% 60% 70% 30%; }
-            25% { border-radius: 30% 70% 60% 40% / 70% 30% 40% 60%; }
-            50% { border-radius: 70% 30% 40% 60% / 30% 70% 60% 40%; }
-            75% { border-radius: 40% 60% 70% 30% / 60% 40% 30% 70%; }
-            100% { border-radius: 60% 40% 30% 70% / 40% 60% 70% 30%; }
-        }
-        @keyframes aurora-morph-two {
-            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-            25% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            50% { border-radius: 40% 60% 60% 40% / 70% 60% 40% 30%; }
-            75% { border-radius: 70% 30% 40% 60% / 40% 70% 30% 60%; }
-            100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-        }
-        @keyframes aurora-morph-three {
-            0% { border-radius: 70% 30% 40% 60% / 30% 70% 60% 40%; }
-            25% { border-radius: 40% 60% 70% 30% / 60% 40% 30% 70%; }
-            50% { border-radius: 60% 40% 30% 70% / 40% 60% 70% 30%; }
-            75% { border-radius: 30% 70% 60% 40% / 70% 30% 40% 60%; }
-            100% { border-radius: 70% 30% 40% 60% / 30% 70% 60% 40%; }
-        }
-        @keyframes aurora-morph-four {
-            0% { border-radius: 40% 60% 60% 40% / 70% 60% 40% 30%; }
-            25% { border-radius: 70% 30% 40% 60% / 40% 70% 30% 60%; }
-            50% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-            75% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            100% { border-radius: 40% 60% 60% 40% / 70% 60% 40% 30%; }
-        }
+        @keyframes move-one { from { transform: translate(-20vw, -20vh) scale(1); } to { transform: translate(50vw, 80vh) scale(1.2); } }
+        @keyframes move-two { from { transform: translate(80vw, 30vh) scale(1); } to { transform: translate(-10vw, 60vh) scale(1.3); } }
+        @keyframes pulse { from { opacity: 0.3; } to { opacity: 0.5; } }
 
 
         /* Fő elrendezés */
@@ -924,8 +830,6 @@
     <div class="aurora-background">
         <div class="aurora one"></div>
         <div class="aurora two"></div>
-        <div class="aurora three"></div>
-        <div class="aurora four"></div>
     </div>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -1018,109 +922,46 @@
               sendBtn = getEl('sendBtn');
         let welcomeScreen = getEl('welcomeScreen');
 
-        // --- 90 másodperces szinkronizált Téma Kezelő ---
+        // --- Szinkronizált Téma Kezelő ---
         class DynamicThemeManager {
             constructor() {
                 this.root = document.documentElement;
                 this.auroraBlobs = document.querySelectorAll('.aurora-background .aurora');
-                
-                // 90 másodperces szinkronizált színpaletta
+
+                // Csak az engedélyezett két-szín kombinációk
                 this.colorPairs = [
-                    { primary: '#007AFF', secondary: '#39FF14' }, // sötétebb kék-neon zöld
-                    { primary: '#0066CC', secondary: '#39FF14' }, // kék-neon zöld
-                    { primary: '#FF2D55', secondary: '#FF69B4' }, // kék-rózsaszín
-                    { primary: '#FF69B4', secondary: '#AF52DE' }, // rózsaszín-lila
-                    { primary: '#AF52DE', secondary: '#007AFF' }, // lila-kék
-                    { primary: '#39FF14', secondary: '#ADFF2F' }  // zöld-sárga
+                    { primary: '#007AFF', secondary: '#39FF14' }, // kék-zöld
+                    { primary: '#39FF14', secondary: '#007AFF' }, // zöld-kék
+                    { primary: '#FF2D55', secondary: '#007AFF' }, // rózsaszín-kék
+                    { primary: '#AF52DE', secondary: '#FF2D55' }, // lila-rózsaszín
+                    { primary: '#AF52DE', secondary: '#007AFF' }  // lila-kék
                 ];
                 this.currentIndex = 0;
-                this.animationStartTime = performance.now();
-                
-                // 90 másodperces teljes ciklus (minden színváltás szinkronban)
-                this.cycleDuration = 90000; // 90 másodperc milliszekundumban
-                this.colorTransitionDuration = this.cycleDuration / this.colorPairs.length; // 15 másodperc egy színre
-                
-                // Kezdeti színek beállítása
-                this.setInitialColors();
-                this.startSynchronizedAnimation();
+
+                this.updateColors(this.colorPairs[0]);
+                setInterval(this.cyclePalette, 5000);
 
                 setTimeout(() => {
                     this.auroraBlobs.forEach(b => b.classList.add('visible'));
-                }, 1000);
+                }, 500);
             }
 
-            setInitialColors() {
-                const initialPair = this.colorPairs[0];
-                this.root.style.setProperty('--primary', initialPair.primary);
-                this.root.style.setProperty('--secondary', initialPair.secondary);
-                this.root.style.setProperty('--accent', initialPair.primary);
-                this.root.style.setProperty('--border-glow', `rgba(${this.hexToRgb(initialPair.primary)}, 0.7)`);
-                this.root.style.setProperty('--primary-rgb', this.hexToRgb(initialPair.primary));
-                this.root.style.setProperty('--secondary-rgb', this.hexToRgb(initialPair.secondary));
-            }
+            updateColors = (colorPair) => {
+                const primaryRGB = this.hexToRgb(colorPair.primary);
+                const secondaryRGB = this.hexToRgb(colorPair.secondary);
 
-            startSynchronizedAnimation = () => {
-                const animate = () => {
-                    const currentTime = performance.now();
-                    const elapsed = (currentTime - this.animationStartTime) % this.cycleDuration;
-                    
-                    // Melyik színpárban vagyunk (0-5)
-                    const colorIndex = Math.floor(elapsed / this.colorTransitionDuration);
-                    const nextColorIndex = (colorIndex + 1) % this.colorPairs.length;
-                    
-                    // Mennyi idő telt el az aktuális színpárban (0-1)
-                    const progress = (elapsed % this.colorTransitionDuration) / this.colorTransitionDuration;
-                    
-                    // Folyékony átmenet a színek között
-                    this.interpolateColors(colorIndex, nextColorIndex, progress);
-                    
-                    requestAnimationFrame(animate);
-                };
-                
-                requestAnimationFrame(animate);
-            };
+                // Kétszínű gradientek használata
+                this.root.style.setProperty('--primary', colorPair.primary);
+                this.root.style.setProperty('--secondary', colorPair.secondary);
+                this.root.style.setProperty('--accent', colorPair.primary);
+                this.root.style.setProperty('--border-glow', `rgba(${primaryRGB}, 0.5)`);
+                this.root.style.setProperty('--primary-rgb', primaryRGB);
+                this.root.style.setProperty('--secondary-rgb', secondaryRGB);
 
-            interpolateColors = (fromIndex, toIndex, progress) => {
-                const fromPair = this.colorPairs[fromIndex];
-                const toPair = this.colorPairs[toIndex];
-                
-                // Smooth easing function (ease-in-out)
-                const easedProgress = progress < 0.5 
-                    ? 2 * progress * progress 
-                    : 1 - 2 * (1 - progress) * (1 - progress);
-                
-                const primaryColor = this.lerpColor(fromPair.primary, toPair.primary, easedProgress);
-                const secondaryColor = this.lerpColor(fromPair.secondary, toPair.secondary, easedProgress);
-                
-                // CSS változók frissítése
-                this.root.style.setProperty('--primary', primaryColor);
-                this.root.style.setProperty('--secondary', secondaryColor);
-                this.root.style.setProperty('--accent', primaryColor);
-                this.root.style.setProperty('--border-glow', `rgba(${this.hexToRgb(primaryColor)}, 0.7)`);
-                this.root.style.setProperty('--primary-rgb', this.hexToRgb(primaryColor));
-                this.root.style.setProperty('--secondary-rgb', this.hexToRgb(secondaryColor));
-
-                // Aurora blob-ok színezése szinkronban
+                // Aurora háttér két színnel
                 this.auroraBlobs.forEach((blob, index) => {
-                    if (index === 0) blob.style.backgroundColor = primaryColor;
-                    else if (index === 1) blob.style.backgroundColor = secondaryColor;
-                    else if (index === 2) blob.style.backgroundColor = this.lerpColor(primaryColor, secondaryColor, 0.5);
-                    else if (index === 3) blob.style.backgroundColor = this.lerpColor(secondaryColor, primaryColor, 0.7);
+                    blob.style.backgroundColor = index % 2 === 0 ? colorPair.primary : colorPair.secondary;
                 });
-            };
-
-            lerpColor = (color1, color2, t) => {
-                const rgb1 = this.hexToRgb(color1);
-                const rgb2 = this.hexToRgb(color2);
-                
-                const [r1, g1, b1] = rgb1.split(', ').map(Number);
-                const [r2, g2, b2] = rgb2.split(', ').map(Number);
-                
-                const r = Math.round(r1 + (r2 - r1) * t);
-                const g = Math.round(g1 + (g2 - g1) * t);
-                const b = Math.round(b1 + (b2 - b1) * t);
-                
-                return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
             };
 
             hexToRgb = (hex) => {
@@ -1133,10 +974,10 @@
                 return `${r}, ${g}, ${b}`;
             };
 
-            // Manuális ciklus váltás gesture-höz
             cyclePalette = () => {
                 this.currentIndex = (this.currentIndex + 1) % this.colorPairs.length;
-                this.animationStartTime = performance.now() - (this.currentIndex * this.colorTransitionDuration);
+                const nextColorPair = this.colorPairs[this.currentIndex];
+                this.updateColors(nextColorPair);
             };
         }
 
@@ -1270,6 +1111,9 @@
                         currentY: touch.clientY,
                         startTime: Date.now()
                     });
+                    
+                    // Vizuális feedback
+                    this.createGestureVisual(touch.clientX, touch.clientY);
                 }
 
                 // Speciális gesture-ök detektálása
@@ -1289,6 +1133,9 @@
                         const touchData = this.touches.get(touch.identifier);
                         touchData.currentX = touch.clientX;
                         touchData.currentY = touch.clientY;
+                        
+                        // Trail létrehozása
+                        this.createGestureTrail(touch.clientX, touch.clientY);
                     }
                 }
 
@@ -1474,11 +1321,29 @@
             }
 
             createGestureVisual(x, y) {
-                // Nincs vizuális feedback, csak haptic
+                const visual = document.createElement('div');
+                visual.className = 'gesture-visual active';
+                visual.style.left = (x - 30) + 'px';
+                visual.style.top = (y - 30) + 'px';
+                
+                document.getElementById('gestureDetector').appendChild(visual);
+                
+                setTimeout(() => visual.remove(), 600);
             }
 
             createGestureTrail(x, y) {
-                // Trail tracking kikapcsolva
+                const trail = document.createElement('div');
+                trail.className = 'gesture-trail';
+                trail.style.left = x + 'px';
+                trail.style.top = y + 'px';
+                
+                document.getElementById('gestureDetector').appendChild(trail);
+                this.gestureTrails.push(trail);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    setTimeout(() => trail.remove(), 300);
+                }, 100);
             }
 
             clearGestureTrails() {
@@ -1594,7 +1459,7 @@
 
         // --- Alkalmazás Inicializálása Gesture-ökkel ---
         document.addEventListener('DOMContentLoaded', () => {
-            window.themeManager = new DynamicThemeManager();
+            new DynamicThemeManager();
             createSVGLogo();
             setupEventListeners();
             loadServices();
