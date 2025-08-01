@@ -7842,8 +7842,6 @@ async def read_root():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     uvicorn.run(app, host="0.0.0.0", port=port)
-            "prediction_quality": "excellent" if avg_confidence > 0.9 else "good" if avg_confidence > 0.7 else "moderate"
-        }
 
 # Önálló AlphaFold 3 model runner inicializálása
 alphafold3_runner = AlphaFold3ModelRunner()
