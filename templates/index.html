@@ -742,10 +742,17 @@
                 this.root = document.documentElement;
                 this.auroraBlobs = document.querySelectorAll('.aurora-background .aurora');
 
-                this.colors = ['#007AFF', '#39FF14', '#FF2D55', '#AF52DE'];
+                // Csak az engedélyezett két-szín kombinációk
+                this.colorPairs = [
+                    { primary: '#007AFF', secondary: '#39FF14' }, // kék-zöld
+                    { primary: '#39FF14', secondary: '#007AFF' }, // zöld-kék
+                    { primary: '#FF2D55', secondary: '#007AFF' }, // rózsaszín-kék
+                    { primary: '#AF52DE', secondary: '#FF2D55' }, // lila-rózsaszín
+                    { primary: '#AF52DE', secondary: '#007AFF' }  // lila-kék
+                ];
                 this.currentIndex = 0;
 
-                this.updateColors(this.colors[0]);
+                this.updateColors(this.colorPairs[0]);
                 setInterval(this.cyclePalette, 5000);
 
                 setTimeout(() => {
@@ -753,20 +760,21 @@
                 }, 500);
             }
 
-            updateColors = (color) => {
-                const colorRGB = this.hexToRgb(color);
+            updateColors = (colorPair) => {
+                const primaryRGB = this.hexToRgb(colorPair.primary);
+                const secondaryRGB = this.hexToRgb(colorPair.secondary);
 
-                // Minden elem ugyanazt a színt kapja
-                this.root.style.setProperty('--primary', color);
-                this.root.style.setProperty('--secondary', color);
-                this.root.style.setProperty('--accent', color);
-                this.root.style.setProperty('--border-glow', `rgba(${colorRGB}, 0.5)`);
-                this.root.style.setProperty('--primary-rgb', colorRGB);
-                this.root.style.setProperty('--secondary-rgb', colorRGB);
+                // Kétszínű gradientek használata
+                this.root.style.setProperty('--primary', colorPair.primary);
+                this.root.style.setProperty('--secondary', colorPair.secondary);
+                this.root.style.setProperty('--accent', colorPair.primary);
+                this.root.style.setProperty('--border-glow', `rgba(${primaryRGB}, 0.5)`);
+                this.root.style.setProperty('--primary-rgb', primaryRGB);
+                this.root.style.setProperty('--secondary-rgb', secondaryRGB);
 
-                // Aurora háttér is ugyanazt a színt kapja
-                this.auroraBlobs.forEach(blob => {
-                    blob.style.backgroundColor = color;
+                // Aurora háttér két színnel
+                this.auroraBlobs.forEach((blob, index) => {
+                    blob.style.backgroundColor = index % 2 === 0 ? colorPair.primary : colorPair.secondary;
                 });
             };
 
@@ -781,9 +789,9 @@
             };
 
             cyclePalette = () => {
-                this.currentIndex = (this.currentIndex + 1) % this.colors.length;
-                const nextColor = this.colors[this.currentIndex];
-                this.updateColors(nextColor);
+                this.currentIndex = (this.currentIndex + 1) % this.colorPairs.length;
+                const nextColorPair = this.colorPairs[this.currentIndex];
+                this.updateColors(nextColorPair);
             };
         }
 
