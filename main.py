@@ -3344,10 +3344,10 @@ CREATOR_HASH = "a7b4c8d9e2f1a6b5c8d9e2f1a6b5c8d9e2f1a6b5c8d9e2f1a6b5c8d9e2f1a6b5
 CREATOR_INFO = "JADED AI Platform - Fejlett tudományos kutatási asszisztens"
 
 # --- API Kulcsok betöltése ---
-# GCP kulcs a feltöltött fájlból
+# GCP SERVICE ACCOUNT kulcs (Enterprise szolgáltatásokhoz - BigQuery, Cloud Storage, Vertex AI)
 GCP_SERVICE_ACCOUNT_KEY_JSON = '''
 {
-  "type": "service_account",
+  "type": "service_account",  
   "project_id": "kitxa-465513",
   "private_key_id": "09170df87ea1ed3bbd0dcb6c1845ccc8ed2f1728",
   "private_key": "-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDarmRgqHmXxNTl\\niMNGn3QFBhYP7H9eSnT+VyUHJSWPQYEn1dmMVZcI71ILdGTJqBevEcElxnrF6f61\\nANP9BqFaXMoTpzp5SCMWEZOOR+uQTXfdMPE53m+bvImz/CLh1Wl46RRwYAH7PJmw\\nRPPXHa41Ugu85OGk3uX3P+J4BzGcO2Z56bpHJqLm6XVr8TzjQd+Qok/amx6XXW7K\\nx7SdQFASbbehc9/R7IaYa/NqnhQvikBp62t4AwKUPBeUD+AFNagxch5iN2a3rocp\\n9AaKdniVhaGngZw23tYK337rMsDpW/RZ+xHAmQ5z+HcfRCS4oLImm6tMNeeVdVSA\\nyXgPD+wlAgMBAAECggEAI+4jb/4+fEFK+avO6fupBGpLlbI1+zggoOmQm+vuj+sj\\nXXg1lmk5t64avOcS6E9GFO3F3n8ODRa1Uugf7KL6P+6fBTukz+iaWzXoGKiYe80+\\ntIkmGWwCyoPf3ELBOHnoKoWhZhVgPfdnCR9LMT0fMoOYiiDRMlWtU0Kb4zzLWe/a\\nztfr+bczroN0O/ClErQDH6/r+BGD5H5C7VXmjst3KGJkz/7MNtdArKUFFs8xaAAa\\njdBrdPCMGT35kTUJBE3dkRBhYeNXvx47KkUPqj5vdFExXRDqX8QLur7SBeV8lL16\\nEeTY2vAnSypj0CNbp9gI5kWxLEfOogNuc473BXLawQKBgQDzEczn4aUJClputmbM\\nNDys7D3VM7/S3E2Q2l/KEtvBtSZCpIjQrUsZWicGPF90/H1qktiosk4s9WyufPFC\\n+xiwCj3T/shvldvQ7oMozYSCRexNjkxnreZ7Ber1CGaECEhzoQHcDbfmfJpupGot\\n3WIsoA1p4embLOVV+yQUo25f5wKBgQDmUHa3WaOEbI4zOo9ccY/mehjisAuzbu76\\nMT37KnzCYsICDfMjK2Ulo1EOwPjQ2+fgilrQVrqD/CVPn7Yk/usYIYwaBoHBcGvD\\nV/boBmemvqgHTUQ+aKzECON/gNwntv6cIBV7seeR0zDKm2TnwUpLv0RImH3en6te\\n+VhMfgkCEwKBgEi+EgFvMPG0rH2njrocA/CIPrT4aLbVAU2RXMtfu26MJOgaz2sM\\nAYaTyUv/c13SVkI3silCO00PIbhSYe12sdu1JO21uQxT39X2G0BxyO8nt+E57bm1\\nfF1i1v7/xZZL2Erqa2EMpfWPYrQr9i7FqyTJvVnrpvqug++oWhLnGhgPAoGBAMMw\\nckxVhcVXEvTLrnAUNnaIB8smk+QQIiybywGwMmeztuRy2hp2TpSlYq70UGsB0/Ry\\njSCAQDZXXW+r1XxpJukelVQBK7q7AjldtX1S4Elqz5DQpQOXRsQlHFkU5oAqEIJU\\nlqBsV+s4ZuNu6weWwtaLVN2JjzM7cstc2r6JGi1NAoGAMMA4Lby6BThxgSK5IauU\\ngZvjiZ/LauP6qJvRersuMwuqK5pLLUzANlZn2tx6wOyVMaLuIJ+eDXstPIObdzyN\\nZ9cYBsNB+U2l1He5DdfKgPs0OhpC52a8IhFBTLJ/f8Rh0I773zF3NMNgXOZYXmr9\\nEwamRvGV2PY6FONZR1LlECg=\\n-----END PRIVATE KEY-----\\n",
@@ -3363,7 +3363,8 @@ GCP_SERVICE_ACCOUNT_KEY_JSON = '''
 GCP_PROJECT_ID = "kitxa-465513"
 GCP_REGION = "us-central1"
 CEREBRAS_API_KEY = os.environ.get("CEREBRAS_API_KEY")
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+# GEMINI AI API kulcs (Google AI Studio-ból, Gemini modellekhez)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")  # AIzaSy... formátum
 EXA_API_KEY = os.environ.get("EXA_API_KEY")
 # OpenAI API kulcsok
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
