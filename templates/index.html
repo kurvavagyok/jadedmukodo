@@ -1277,6 +1277,24 @@
                 deepSearchToggle.addEventListener('click', toggleDeepSearch);
             }
 
+        // Input változás követése Deep Search esetén
+        if (messageInput) {
+            messageInput.addEventListener('input', () => {
+                // Ha Deep Search aktív és elkezdünk írni, ne deaktiváljuk
+                if (AppState.isDeepSearchActive) {
+                    return; // Hagyjuk aktívan
+                }
+
+                if (messageInput.value.trim().length > 0) {
+                    sendBtn.classList.add('active');
+                } else {
+                    sendBtn.classList.remove('active');
+                }
+                messageInput.style.height = 'auto';
+                messageInput.style.height = `${Math.min(messageInput.scrollHeight, 120)}px`;
+            });
+        }
+
             // New chat button eseménykezelő
             const newChatBtn = document.querySelector('.new-chat-btn');
             if (newChatBtn) {
