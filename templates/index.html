@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -231,13 +230,20 @@
             max-height: 100vh; max-height: -webkit-fill-available;
             overflow: hidden;
         }
-        .header {
-            padding: 8px 16px; background: rgba(5, 2, 10, 0.5);
-            backdrop-filter: blur(30px) saturate(150%);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100; height: 56px;
-            flex-shrink: 0;
+
+        /* Header optimalizálás - kompaktabb */
+        .header { 
+            padding: 8px 16px; 
+            height: 52px; /* Alacsonyabb header */
+        }
+        .header-title { 
+            font-size: 0.95rem; 
+            font-weight: 600;
+        }
+        .menu-toggle { 
+            width: 36px; 
+            height: 36px; /* Kisebb gomb */
+            font-size: 0.9rem;
         }
         .menu-toggle {
             background: var(--glass-strong); border: 1px solid var(--border);
@@ -246,18 +252,13 @@
             font-size: 0.9rem; width: 36px; height: 36px;
             display: flex; align-items: center; justify-content: center;
         }
-        .menu-toggle:hover { background: var(--glass-strong); border-color: var(--border-glow); transform: scale(1.05); }
-
-        /* Chat terület */
+        .menu-toggle:hover { background: var(--glass-strong); border-color: var(--border-glow); transform: scale(1.05); }        /* Chat terület */
         .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Chat terület iOS optimalizálás - kompakt */
         .messages-container { 
-            flex: 1; 
-            overflow-y: auto; 
-            overflow-x: hidden;
-            padding: 16px; 
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
+            padding: 12px 16px; /* Kisebb padding */
+            max-height: calc(100vh - 120px); /* Megfelelő hely a chat-nek */
         }
         .welcome-screen {
             text-align: center; max-width: 450px; margin: 0 auto;
@@ -266,6 +267,26 @@
             animation: fadeIn 1s var(--transition-curve);
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Welcome screen kompaktabb mobilra */
+        .welcome-screen { 
+            padding: 24px 20px; 
+            margin-top: 10px;
+        }
+        .welcome-title { 
+            font-size: 2rem; /* Kisebb cím */
+            margin-bottom: 0.6rem;
+        }
+        .welcome-subtitle { 
+            font-size: 0.95rem; /* Kisebb alcím */
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .start-btn { 
+            padding: 12px 24px; /* Kisebb gomb */
+            font-size: 0.9rem;
+            min-height: 44px; /* Kisebb touch target */
+        }
         .welcome-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
         .welcome-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
         .start-btn {
@@ -279,6 +300,18 @@
         .message { margin-bottom: 16px; animation: messageSlideIn 0.5s var(--transition-curve); }
         @keyframes messageSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .user-message { display: flex; justify-content: flex-end; }
+
+        /* Üzenetek kompaktabb méretezés */
+        .user-bubble { 
+            padding: 10px 14px; /* Kisebb bubbles */
+            font-size: 0.9rem; /* Kompaktabb szöveg */
+            max-width: 85%; /* Kevesebb hely */
+        }
+        .ai-content { 
+            padding: 12px 16px; 
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
         .user-bubble {
             color: #fff; padding: 10px 16px;
             border-radius: 16px 16px 4px 16px; max-width: 85%;
@@ -397,80 +430,85 @@
                 width: 280px; /* Szélesebb az iPhone-hoz */
                 font-size: 0.9rem; /* Nagyobb szöveg mobiltelefonon */
             }
-            
-            /* Header optimalizálás */
+
+            /* Header optimalizálás - kompaktabb */
             .header { 
-                padding: 12px 16px; 
-                height: 64px; /* Magasabb header iOS-en */
+                padding: 8px 16px; 
+                height: 52px; /* Alacsonyabb header */
             }
             .header-title { 
-                font-size: 1.1rem; 
-                font-weight: 700;
+                font-size: 0.95rem; 
+                font-weight: 600;
             }
             .menu-toggle { 
-                width: 44px; 
-                height: 44px; /* iOS touch target méret */
-                font-size: 1.1rem;
+                width: 36px; 
+                height: 36px; /* Kisebb gomb */
+                font-size: 0.9rem;
             }
-            
-            /* Chat terület iOS optimalizálás */
+
+            /* Chat terület iOS optimalizálás - kompakt */
             .messages-container { 
-                padding: 16px 20px; /* Nagyobb padding mobil */
-                max-height: calc(100vh - 140px); /* Több hely a chat-nek */
+                padding: 12px 16px; /* Kisebb padding */
+                max-height: calc(100vh - 120px); /* Megfelelő hely a chat-nek */
             }
-            
-            /* Üzenetek nagyobb méretezés */
+
+            /* Üzenetek kompaktabb méretezés */
             .user-bubble { 
-                padding: 14px 18px; /* Nagyobb bubbles */
-                font-size: 1rem; /* Nagyobb szöveg */
-                max-width: 90%; /* Több hely használata */
+                padding: 10px 14px; /* Kisebb bubbles */
+                font-size: 0.9rem; /* Kompaktabb szöveg */
+                max-width: 85%; /* Kevesebb hely */
             }
             .ai-content { 
-                padding: 16px 20px; 
-                font-size: 1rem;
-                line-height: 1.6;
+                padding: 12px 16px; 
+                font-size: 0.9rem;
+                line-height: 1.5;
             }
-            
-            /* Input terület iOS optimalizálás */
+
+            /* Input terület iOS optimalizálás - kompakt */
             .input-area { 
-                padding: 16px 20px; 
-                padding-bottom: max(16px, env(safe-area-inset-bottom) + 8px);
+                padding: 12px 16px; 
+                padding-bottom: max(12px, env(safe-area-inset-bottom) + 4px);
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 100;
             }
             .message-input { 
-                font-size: 1rem; /* Nagyobb input szöveg */
-                min-height: 46px; /* iOS ajánlott touch méret */
-                padding: 12px 18px;
+                font-size: 0.9rem; /* Kisebb input szöveg */
+                min-height: 40px; /* Kisebb touch méret */
+                padding: 10px 16px;
             }
             .send-btn-container { 
-                width: 46px; 
-                height: 46px; /* Nagyobb send gomb */
+                width: 40px; 
+                height: 40px; /* Kisebb send gomb */
             }
             .deep-search-toggle { 
-                width: 46px; 
-                height: 46px;
-                font-size: 1.1rem;
+                width: 40px; 
+                height: 40px;
+                font-size: 1rem;
             }
-            
-            /* Welcome screen mobilra */
+
+            /* Welcome screen kompaktabb mobilra */
             .welcome-screen { 
-                padding: 40px 24px; 
-                margin-top: 20px;
+                padding: 24px 20px; 
+                margin-top: 10px;
             }
             .welcome-title { 
-                font-size: 2.4rem; /* Nagyobb cím */
-                margin-bottom: 0.8rem;
+                font-size: 2rem; /* Kisebb cím */
+                margin-bottom: 0.6rem;
             }
             .welcome-subtitle { 
-                font-size: 1.1rem; /* Nagyobb alcím */
-                line-height: 1.7;
-                margin-bottom: 2rem;
+                font-size: 0.95rem; /* Kisebb alcím */
+                line-height: 1.6;
+                margin-bottom: 1.5rem;
             }
             .start-btn { 
-                padding: 14px 28px; /* Nagyobb gomb */
-                font-size: 1rem;
-                min-height: 50px; /* iOS touch target */
+                padding: 12px 24px; /* Kisebb gomb */
+                font-size: 0.9rem;
+                min-height: 44px; /* Kisebb touch target */
             }
-            
+
             /* Sidebar tartalom mobilra */
             .sidebar-header { 
                 padding: 20px 16px; 
@@ -486,7 +524,7 @@
                 font-size: 1rem;
                 min-height: 48px;
             }
-            
+
             /* Service items nagyobb touch target */
             .service-item { 
                 padding: 12px; 
@@ -504,7 +542,7 @@
             .service-info p { 
                 font-size: 0.8rem; 
             }
-            
+
             /* Category header nagyobb */
             .category-header { 
                 padding: 12px; 
@@ -513,7 +551,7 @@
             .category-title { 
                 font-size: 0.95rem; 
             }
-            
+
             /* Progress és research indikátorok */
             .research-indicator { 
                 padding: 24px; 
@@ -527,14 +565,14 @@
                 font-size: 0.95rem; 
                 line-height: 1.6;
             }
-            
+
             /* Typography általános javítás */
             body { 
                 font-size: 16px; /* iOS zoom prevention */
                 -webkit-text-size-adjust: 100%;
             }
         }
-        
+
         /* Speciális iPhone SE és kis képernyős optimalizálás */
         @media (max-width: 414px) {
             .sidebar { width: 260px; }
@@ -543,7 +581,7 @@
             .input-area { padding: 12px 16px; }
             .user-bubble, .ai-content { font-size: 0.95rem; }
         }
-        
+
         /* iPhone mini és nagyon kis képernyő */
         @media (max-width: 375px) {
             .sidebar { width: 240px; }
@@ -571,7 +609,7 @@
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
-        
+
         body {
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
@@ -596,12 +634,12 @@
             /* Scroll snap pontok a jobb UX-ért */
             scroll-snap-type: y proximity;
         }
-        
+
         .message {
             /* Minden üzenet scroll snap pont lehet */
             scroll-snap-align: start;
         }
-        
+
         /* iOS KEYBOARD RESIZE OPTIMALIZÁLÁS */
         @media (max-width: 768px) {
             /* Viewport height fix iOS Safari-hoz */
@@ -611,17 +649,17 @@
                 max-height: 100vh;
                 max-height: -webkit-fill-available;
             }
-            
+
             /* Keyboard megjelenésekor */
             .keyboard-open .main-content {
                 height: calc(100vh - env(keyboard-inset-height, 0px));
                 height: calc(-webkit-fill-available - env(keyboard-inset-height, 0px));
             }
-            
+
             .keyboard-open .messages-container {
                 max-height: calc(100vh - 200px - env(keyboard-inset-height, 0px));
             }
-            
+
             /* Input focus optimalizálás */
             .message-input:focus {
                 /* iOS Safari zoom prevention */
@@ -629,7 +667,7 @@
                 transform: none;
             }
         }
-        
+
         /* PULL TO REFRESH LETILTÁSA (ha nem kell) */
         .messages-container {
             overscroll-behavior-y: contain;
@@ -653,12 +691,12 @@
                 height: 100vh;
                 height: -webkit-fill-available;
             }
-            
+
             .main-content {
                 min-height: calc(100vh - env(safe-area-inset-bottom));
                 min-height: calc(-webkit-fill-available - env(safe-area-inset-bottom));
             }
-            
+
             .messages-container {
                 max-height: calc(100vh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
             }
@@ -680,14 +718,14 @@
             transition: transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
             opacity: 0.8;
         }
-        
+
         /* iOS HAPTIC FEEDBACK SIMULATION */
         .send-btn:active {
             background: linear-gradient(135deg, 
                 color-mix(in srgb, var(--primary) 90%, white), 
                 color-mix(in srgb, var(--secondary) 90%, white));
         }
-        
+
         /* IMPROVED TOUCH TARGETS - iOS ajánlások szerint */
         @media (max-width: 768px) {
             .menu-toggle,
@@ -698,12 +736,12 @@
                 min-width: 44px;
                 min-height: 44px;
             }
-            
+
             .service-item {
                 min-height: 56px; /* Nagyobb touch terület */
                 margin-bottom: 8px;
             }
-            
+
             .category-header {
                 min-height: 52px;
             }
@@ -879,6 +917,31 @@
         .document-info p {
             margin: 0; font-size: 0.75rem;
             color: var(--text-muted);
+        }
+
+        /* Input terület iOS optimalizálás - kompakt */
+        .input-area { 
+            padding: 12px 16px; 
+            padding-bottom: max(12px, env(safe-area-inset-bottom) + 4px);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .message-input { 
+            font-size: 0.9rem; /* Kisebb input szöveg */
+            min-height: 40px; /* Kisebb touch méret */
+            padding: 10px 16px;
+        }
+        .send-btn-container { 
+            width: 40px; 
+            height: 40px; /* Kisebb send gomb */
+        }
+        .deep-search-toggle { 
+            width: 40px; 
+            height: 40px;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -1460,7 +1523,7 @@
                     // Fallback régi böngészőknek
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 }
-                
+
                 // iOS Safari fix
                 setTimeout(() => {
                     if (messagesContainer.scrollTop < messagesContainer.scrollHeight - messagesContainer.clientHeight) {
@@ -1498,10 +1561,10 @@
         // Kategória toggle függvény
         function toggleCategory(headerElement) {
             if (!headerElement) return;
-            
+
             const services = headerElement.nextElementSibling;
             const chevron = headerElement.querySelector('.fa-chevron-down');
-            
+
             if (services && chevron) {
                 const isOpen = services.classList.toggle('open');
                 chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
