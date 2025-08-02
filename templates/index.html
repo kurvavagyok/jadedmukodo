@@ -877,15 +877,24 @@
         // --- Alkalmazás Inicializálása Gesture-ökkel ---
 
         document.addEventListener('DOMContentLoaded', () => {
-            window.themeManager = new DynamicThemeManager();
-            createSVGLogo();
-            setupEventListeners();
-            loadServices();
+            try {
+                window.themeManager = new DynamicThemeManager();
+                createSVGLogo();
+                setupEventListeners();
+                loadServices();
 
-            // Sidebar gesture
-            window.gestureManager = new SimpleSidebarGesture();
+                // Sidebar gesture
+                window.gestureManager = new SimpleSidebarGesture();
 
-            messageInput.focus();
+                // Focus input ha elérhető
+                if (messageInput) {
+                    messageInput.focus();
+                }
+
+                console.log('JADED alkalmazás sikeresen inicializálva');
+            } catch (error) {
+                console.error('Inicializálási hiba:', error);
+            }
         });
 
         function setupEventListeners() {
@@ -911,6 +920,36 @@
             if (sidebarOverlay) {
                 sidebarOverlay.addEventListener('click', closeSidebar);
             }
+
+            // Menu toggle eseménykezelő
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', toggleSidebar);
+            }
+
+            // Send button eseménykezelő
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendMessage);
+            }
+
+            // Deep search toggle eseménykezelő
+            const deepSearchToggle = getEl('deepSearchToggle');
+            if (deepSearchToggle) {
+                deepSearchToggle.addEventListener('click', toggleDeepSearch);
+            }
+
+            // New chat button eseménykezelő
+            const newChatBtn = document.querySelector('.new-chat-btn');
+            if (newChatBtn) {
+                newChatBtn.addEventListener('click', newChat);
+            }
+
+            // Start button eseménykezelő
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('start-btn')) {
+                    hideWelcome();
+                }
+            });
         }
 
         // --- UI Kezelő Függvények ---
@@ -924,16 +963,25 @@
             if (sidebarOverlay) sidebarOverlay.classList.remove('active'); 
         }
 
-        // Add missing toggleSidebar function
+        // Sidebar toggle funkció
         function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('collapsed');
+            if (sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
             }
         }
 
-        // Globálisan elérhető toggleSidebar függvény
+        // Globálisan elérhető függvények
         window.toggleSidebar = toggleSidebar;
+        window.openSidebar = openSidebar;
+        window.closeSidebar = closeSidebar;
+        window.newChat = newChat;
+        window.hideWelcome = hideWelcome;
+        window.selectService = selectService;
+        window.toggleCategory = toggleCategory;
+        window.sendMessage = sendMessage;
+        window.toggleDeepSearch = toggleDeepSearch;
         function hideWelcome() { if (welcomeScreen) { welcomeScreen.style.display = 'none'; welcomeScreen = null; } }
 
         function newChat() {
@@ -977,8 +1025,10 @@
                     const meta = categoryMeta[categoryId] || { name: categoryId, icon: 'fa-star' };
                     let servicesHTML = '';
                     for (const serviceName in category) {
+                        const safeServiceName = serviceName.replace(/'/g, '\\\'');
+                        const safeDescription = category[serviceName].replace(/'/g, '\\\'');
                         servicesHTML += `
-                            <div class="service-item" onclick="selectService('${escapeHtml(serviceName)}', '${escapeHtml(category[serviceName])}')">
+                            <div class="service-item" onclick="selectService('${safeServiceName}', '${safeDescription}')">
                                 <div class="service-icon"><i class="fas fa-flask"></i></div>
                                 <div class="service-info">
                                     <h4>${escapeHtml(serviceName)}</h4>
@@ -1128,19 +1178,40 @@
 
         // --- Segédfüggvények ---
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
-            div.textContent = text;
+            div.textContent = String(text);
             return div.innerHTML;
+        }
+
+        // Debug függvény
+        function debugLog(message, data = null) {
+            console.log(`[JADED Debug] ${message}`, data);
         }
 
         // Szolgáltatás kiválasztás függvény
         function selectService(serviceName, serviceDescription) {
             hideWelcome();
             const prompt = `Kérlek segíts a következő szolgáltatással: ${serviceName} - ${serviceDescription}`;
-            messageInput.value = prompt;
-            messageInput.dispatchEvent(new Event('input'));
-            messageInput.focus();
+            if (messageInput) {
+                messageInput.value = prompt;
+                messageInput.dispatchEvent(new Event('input'));
+                messageInput.focus();
+            }
             closeSidebar();
+        }
+
+        // Kategória toggle függvény
+        function toggleCategory(headerElement) {
+            if (!headerElement) return;
+            
+            const services = headerElement.nextElementSibling;
+            const chevron = headerElement.querySelector('.fa-chevron-down');
+            
+            if (services && chevron) {
+                const isOpen = services.classList.toggle('open');
+                chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
         }
 
         // --- Deep Search Progress Indicator ---
