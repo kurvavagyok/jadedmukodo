@@ -228,6 +228,7 @@
             flex: 1; margin-left: 0; display: flex; flex-direction: column;
             transition: margin-left 0.4s var(--transition-curve);
             min-height: 100vh; min-height: -webkit-fill-available;
+            max-height: 100vh; max-height: -webkit-fill-available;
             overflow: hidden;
         }
         .header {
@@ -249,7 +250,15 @@
 
         /* Chat terület */
         .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .messages-container { flex: 1; overflow-y: auto; padding: 16px; scroll-behavior: smooth; }
+        .messages-container { 
+            flex: 1; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            padding: 16px; 
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
         .welcome-screen {
             text-align: center; max-width: 450px; margin: 0 auto;
             padding: 30px 16px; display: flex; flex-direction: column;
@@ -404,12 +413,16 @@
         body {
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
+            overflow: hidden;
         }
 
         .messages-container {
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
             overscroll-behavior-y: contain;
+            overscroll-behavior-x: hidden;
+            height: 100%;
+            max-height: calc(100vh - 120px);
         }
 
         /* iOS SAFE AREA SUPPORT */
@@ -834,10 +847,18 @@
                 if (!this.startX || !this.startY) return;
 
                 const currentX = e.touches[0].clientX;
+                const currentY = e.touches[0].clientY;
                 const deltaX = currentX - this.startX;
+                const deltaY = currentY - this.startY;
+
+                // Ha vertikális görgetés történik a chat területen, ne zavarjuk meg
+                const isInChatArea = e.target.closest('.messages-container');
+                if (isInChatArea && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    return; // Engedjük a vertikális görgetést
+                }
 
                 // Sidebar swipe detection
-                if (Math.abs(deltaX) > 50) {
+                if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
                     if (deltaX > 0 && this.startX < 50) {
                         // Swipe right from left edge - open sidebar
                         openSidebar();
@@ -1174,7 +1195,25 @@
         }
 
         function scrollToBottom() {
-            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+            if (messagesContainer) {
+                // Többféle módszer a biztos görgetéshez
+                try {
+                    messagesContainer.scrollTo({ 
+                        top: messagesContainer.scrollHeight, 
+                        behavior: 'smooth' 
+                    });
+                } catch (e) {
+                    // Fallback régi böngészőknek
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+                
+                // iOS Safari fix
+                setTimeout(() => {
+                    if (messagesContainer.scrollTop < messagesContainer.scrollHeight - messagesContainer.clientHeight) {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                }, 100);
+            }
         }
 
         // --- Segédfüggvények ---
