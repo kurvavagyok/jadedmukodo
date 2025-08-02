@@ -133,9 +133,9 @@
         .service-item:hover { border-left-color: var(--primary); }
         .input-wrapper:focus-within { border-color: var(--primary); box-shadow: 0 0 15px -2px var(--primary); }
 
-        /* Oldalsáv (Sidebar) */
+        /* Oldalsáv (Sidebar) 25%-kal kisebb */
         .sidebar {
-            width: 260px;
+            width: 195px; /* 25%-kal kisebb */
             background: var(--surface);
             backdrop-filter: blur(40px) saturate(180%);
             border-right: 1px solid var(--border);
@@ -157,24 +157,24 @@
             transition: all 0.4s ease;
         }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar-header { padding: 16px 12px; border-bottom: 1px solid var(--border); }
-        .logo { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .sidebar-header { padding: 12px 9px; border-bottom: 1px solid var(--border); } /* 25%-kal kisebb */
+        .logo { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; } /* 25%-kal kisebb */
 
-        /* ÚJ, LETISZTULT SVG LOGÓ */
+        /* ÚJ, LETISZTULT SVG LOGÓ 25%-kal kisebb */
         .logo-icon {
-            width: 32px; height: 32px;
+            width: 24px; height: 24px; /* 25%-kal kisebb */
             transition: transform 0.3s var(--transition-curve);
         }
         .logo:hover .logo-icon { transform: scale(1.15) rotate(10deg); }
 
-        .logo-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.1; }
-        .logo-text p { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+        .logo-text h1 { font-size: 0.83rem; font-weight: 700; line-height: 1.1; } /* 25%-kal kisebb */
+        .logo-text p { font-size: 0.53rem; color: var(--text-muted); margin-top: 2px; font-weight: 500; } /* 25%-kal kisebb */
         .new-chat-btn {
             width: 100%; background: var(--glass-strong);
             border: 1px solid var(--border); color: var(--text);
-            border-radius: var(--radius); padding: 10px 12px;
-            font-weight: 600; font-size: 0.8rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
+            border-radius: 15px; padding: 7px 9px; /* 25%-kal kisebb */
+            font-weight: 600; font-size: 0.6rem; cursor: pointer; /* 25%-kal kisebb */
+            display: flex; align-items: center; justify-content: center; gap: 4px; /* 25%-kal kisebb */
             transition: all 0.3s var(--transition-curve);
         }
         .new-chat-btn:hover {
@@ -182,45 +182,45 @@
             border-color: var(--border-glow);
             box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.4), 0 0 15px -5px var(--border-glow);
         }
-        .sidebar-content { padding: 12px; flex-grow: 1; overflow-y: auto; }
-        .sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
-        .made-by { font-size: 0.7rem; color: var(--text-muted); text-align: center; }
-        .service-category { margin-bottom: 16px; }
+        .sidebar-content { padding: 9px; flex-grow: 1; overflow-y: auto; } /* 25%-kal kisebb */
+        .sidebar-footer { padding: 9px; border-top: 1px solid var(--border); } /* 25%-kal kisebb */
+        .made-by { font-size: 0.53rem; color: var(--text-muted); text-align: center; } /* 25%-kal kisebb */
+        .service-category { margin-bottom: 12px; } /* 25%-kal kisebb */
         .category-header {
             background: var(--glass); border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px; cursor: pointer;
+            border-radius: 6px; padding: 6px; cursor: pointer; /* 25%-kal kisebb */
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 6px; transition: all 0.3s var(--transition-curve); min-height: 40px;
+            margin-bottom: 4px; transition: all 0.3s var(--transition-curve); min-height: 30px; /* 25%-kal kisebb */
         }
         .category-header .fa-chevron-down { transition: transform 0.3s var(--transition-curve); }
         .category-header:hover { background: var(--glass-strong); border-color: var(--border-glow); transform: translateY(-2px); }
-        .category-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.8rem; }
+        .category-title { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.6rem; } /* 25%-kal kisebb */
         .category-services { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease-out; }
         .category-services > div { overflow: hidden; }
         .category-services.open { grid-template-rows: 1fr; }
         .service-item {
             background: transparent; border: 1px solid transparent;
-            border-radius: 8px; padding: 8px; margin-bottom: 4px; cursor: pointer;
+            border-radius: 6px; padding: 6px; margin-bottom: 3px; cursor: pointer; /* 25%-kal kisebb */
             transition: all 0.3s var(--transition-curve);
-            display: flex; align-items: center; gap: 8px;
-            margin-left: 8px; border-left: 2px solid var(--border); min-height: 44px;
+            display: flex; align-items: center; gap: 6px; /* 25%-kal kisebb */
+            margin-left: 6px; border-left: 2px solid var(--border); min-height: 33px; /* 25%-kal kisebb */
         }
-        .service-item:hover { background: var(--glass-strong); border-color: transparent transparent transparent var(--primary); transform: translateX(4px); color: #fff; }
+        .service-item:hover { background: var(--glass-strong); border-color: transparent transparent transparent var(--primary); transform: translateX(3px); color: #fff; } /* 25%-kal kisebb */
         .service-icon {
-            width: 32px; height: 32px;
+            width: 24px; height: 24px; /* 25%-kal kisebb */
             background: linear-gradient(135deg, var(--primary), rgba(0, 122, 255, 0.8));
-            border: 1px solid var(--primary); border-radius: 10px;
+            border: 1px solid var(--primary); border-radius: 7px; /* 25%-kal kisebb */
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; flex-shrink: 0; color: white;
+            font-size: 0.75rem; flex-shrink: 0; color: white; /* 25%-kal kisebb */
             transition: all 0.3s var(--transition-curve);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 3px 9px rgba(0, 0, 0, 0.3); /* 25%-kal kisebb */
         }
         .service-item:hover .service-icon { 
             transform: scale(1.1) rotate(5deg); 
-            box-shadow: 0 6px 20px var(--primary);
+            box-shadow: 0 4px 15px var(--primary); /* 25%-kal kisebb */
         }
-        .service-info h4 { font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
-        .service-info p { font-size: 0.7rem; color: var(--text-muted); }
+        .service-info h4 { font-size: 0.56rem; font-weight: 600; margin-bottom: 2px; } /* 25%-kal kisebb */
+        .service-info p { font-size: 0.53rem; color: var(--text-muted); } /* 25%-kal kisebb */
 
         /* Fő tartalom */
         .main-content {
@@ -231,10 +231,10 @@
             overflow: hidden;
         }
 
-        /* Header normál méretezés */
+        /* Header 25%-kal kisebb méretezés */
         .header { 
-            padding: 12px 16px; 
-            height: 60px; /* Normál header magasság */
+            padding: 9px 12px; 
+            height: 45px; /* 25%-kal kisebb header magasság */
             background: var(--surface);
             backdrop-filter: blur(40px) saturate(180%);
             border-bottom: 1px solid var(--border);
@@ -246,21 +246,21 @@
             z-index: 100;
         }
         .header-title { 
-            font-size: 1.1rem; 
+            font-size: 0.83rem; /* 25%-kal kisebb */
             font-weight: 600;
             margin: 0;
         }
         .menu-toggle {
             background: var(--glass-strong); 
             border: 1px solid var(--border);
-            border-radius: 8px; 
-            padding: 8px; 
+            border-radius: 6px; /* 25%-kal kisebb */
+            padding: 6px; /* 25%-kal kisebb */
             color: var(--text);
             cursor: pointer; 
             transition: all 0.3s var(--transition-curve);
-            font-size: 1rem; 
-            width: 40px; 
-            height: 40px;
+            font-size: 0.75rem; /* 25%-kal kisebb */
+            width: 30px; /* 25%-kal kisebb */
+            height: 30px; /* 25%-kal kisebb */
             display: flex; 
             align-items: center; 
             justify-content: center;
@@ -272,10 +272,10 @@
         }        /* Chat terület */
         .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Chat terület normál méretezés */
+        /* Chat terület kisebb méretezés */
         .messages-container { 
-            padding: 16px; 
-            max-height: calc(100vh - 140px); /* Megfelelő hely a chat-nek */
+            padding: 12px; /* 25%-kal kisebb */
+            max-height: calc(100vh - 105px); /* Kisebb header miatt módosítva */
             overflow-y: auto;
             flex: 1;
         }
@@ -287,61 +287,61 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Welcome screen ultra-kompakt iPhone optimalizálás */
+        /* Welcome screen 25%-kal kisebb */
         .welcome-screen { 
-            padding: 16px 12px; 
-            margin-top: 5px;
+            padding: 12px 9px; /* 25%-kal kisebb */
+            margin-top: 4px; /* 25%-kal kisebb */
         }
         .welcome-title { 
-            font-size: 1.7rem; /* Még kisebb cím */
-            margin-bottom: 0.4rem;
+            font-size: 1.28rem; /* 25%-kal kisebb */
+            margin-bottom: 0.3rem; /* 25%-kal kisebb */
         }
         .welcome-subtitle { 
-            font-size: 0.8rem; /* Még kisebb alcím */
+            font-size: 0.6rem; /* 25%-kal kisebb */
             line-height: 1.5;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem; /* 25%-kal kisebb */
         }
         .start-btn { 
-            padding: 10px 20px; /* Még kisebb gomb */
-            font-size: 0.8rem;
-            min-height: 38px; /* Még kisebb touch target */
+            padding: 7px 15px; /* 25%-kal kisebb */
+            font-size: 0.6rem; /* 25%-kal kisebb */
+            min-height: 28px; /* 25%-kal kisebb */
         }
-        .welcome-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
-        .welcome-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+        .welcome-title { font-size: 1.65rem; font-weight: 800; margin-bottom: 0.38rem; } /* 25%-kal kisebb */
+        .welcome-subtitle { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 1.13rem; line-height: 1.6; } /* 25%-kal kisebb */
         .start-btn {
             background: var(--glass-strong); border: 1px solid var(--border);
-            border-radius: 10px; padding: 10px 20px; color: var(--text);
-            font-weight: 600; font-size: 0.8rem; cursor: pointer;
+            border-radius: 7px; padding: 7px 15px; color: var(--text); /* 25%-kal kisebb */
+            font-weight: 600; font-size: 0.6rem; cursor: pointer; /* 25%-kal kisebb */
             transition: all 0.3s var(--transition-curve);
-            display: inline-flex; align-items: center; gap: 8px; min-height: 40px;
+            display: inline-flex; align-items: center; gap: 6px; min-height: 30px; /* 25%-kal kisebb */
         }
         .start-btn:hover { border-color: var(--border-glow); transform: translateY(-3px) scale(1.05); }
         .message { margin-bottom: 16px; animation: messageSlideIn 0.5s var(--transition-curve); }
         @keyframes messageSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .user-message { display: flex; justify-content: flex-end; }
 
-        /* Üzenetek ultra-kompakt iPhone optimalizálás */
+        /* Üzenetek 25%-kal kisebb */
         .user-bubble { 
-            padding: 8px 12px; /* Még kisebb bubbles */
-            font-size: 0.8rem; /* Még kompaktabb szöveg */
-            max-width: 88%; /* Több hely kihasználása */
+            padding: 6px 9px; /* 25%-kal kisebb */
+            font-size: 0.6rem; /* 25%-kal kisebb */
+            max-width: 88%; 
         }
         .ai-content { 
-            padding: 10px 12px; 
-            font-size: 0.8rem;
+            padding: 7px 9px; /* 25%-kal kisebb */
+            font-size: 0.6rem; /* 25%-kal kisebb */
             line-height: 1.4;
         }
         .user-bubble {
-            color: #fff; padding: 10px 16px;
-            border-radius: 16px 16px 4px 16px; max-width: 85%;
-            font-weight: 500; font-size: 0.9rem; line-height: 1.5;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            color: #fff; padding: 7px 12px; /* 25%-kal kisebb */
+            border-radius: 12px 12px 3px 12px; max-width: 85%; /* 25%-kal kisebb */
+            font-weight: 500; font-size: 0.68rem; line-height: 1.5; /* 25%-kal kisebb */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 25%-kal kisebb */
         }
         .ai-message { display: flex; flex-direction: column; max-width: 95%; }
         .ai-content {
             background: var(--glass); border: 1px solid var(--border);
-            border-radius: 16px 16px 16px 4px; padding: 12px 16px;
-            line-height: 1.7; font-size: 0.9rem;
+            border-radius: 12px 12px 12px 3px; padding: 9px 12px; /* 25%-kal kisebb */
+            line-height: 1.7; font-size: 0.68rem; /* 25%-kal kisebb */
         }
         .ai-content pre {
             background: rgba(0,0,0,0.4); border: 1px solid var(--border);
@@ -350,9 +350,9 @@
         }
         .ai-content code { font-family: 'SF Mono', 'Fira Code', monospace; }
 
-        /* Beviteli mező */
+        /* Beviteli mező 25%-kal kisebb */
         .input-area {
-            padding: 12px 16px; 
+            padding: 9px 12px; /* 25%-kal kisebb */
             background: rgba(5, 2, 10, 0.5);
             backdrop-filter: blur(30px) saturate(150%);
             border-top: 1px solid var(--border);
@@ -363,24 +363,24 @@
             width: 100%;
             box-sizing: border-box;
         }
-        @supports (padding: max(0px)) { .input-area { padding-bottom: max(12px, env(safe-area-inset-bottom)); } }
+        @supports (padding: max(0px)) { .input-area { padding-bottom: max(9px, env(safe-area-inset-bottom)); } } /* 25%-kal kisebb */
         .input-wrapper {
             width: 100%;
             max-width: 100%;
             margin: 0;
             display: flex;
-            gap: 8px;
+            gap: 6px; /* 25%-kal kisebb */
             align-items: flex-end;
         }
 
-        /* Deep Search Toggle Button */
+        /* Deep Search Toggle Button 25%-kal kisebb */
         .deep-search-toggle {
-            width: 40px; height: 40px;
+            width: 30px; height: 30px; /* 25%-kal kisebb */
             background: var(--glass-strong);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 15px; /* 25%-kal kisebb */
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 0.9rem; color: var(--text-muted);
+            cursor: pointer; font-size: 0.68rem; color: var(--text-muted); /* 25%-kal kisebb */
             transition: all 0.3s var(--transition-curve);
             flex-shrink: 0;
         }
@@ -393,7 +393,7 @@
         .deep-search-toggle.active {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white; border-color: transparent;
-            box-shadow: 0 0 15px -3px var(--primary);
+            box-shadow: 0 0 11px -3px var(--primary); /* 25%-kal kisebb */
         }
         .deep-search-toggle.active:hover {
             transform: scale(1.1);
@@ -403,22 +403,22 @@
             width: 100%;
             background: var(--glass-strong);
             border: 1px solid var(--border); 
-            border-radius: 25px;
-            padding: 8px 16px; 
+            border-radius: 19px; /* 25%-kal kisebb */
+            padding: 6px 12px; /* 25%-kal kisebb */
             color: var(--text);
-            font-size: 0.9rem; 
+            font-size: 0.68rem; /* 25%-kal kisebb */
             resize: none; 
             outline: none;
             transition: all 0.3s var(--transition-curve);
-            min-height: 40px; 
-            max-height: 120px; 
+            min-height: 30px; /* 25%-kal kisebb */
+            max-height: 90px; /* 25%-kal kisebb */
             font-family: inherit; 
             line-height: 1.4;
             box-sizing: border-box;
         }
 
         .send-btn-container {
-            width: 40px; height: 40px;
+            width: 30px; height: 30px; /* 25%-kal kisebb */
             flex-shrink: 0;
         }
         .send-btn {
@@ -429,6 +429,7 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             transition: all 0.3s var(--transition-curve);
+            font-size: 0.68rem; /* 25%-kal kisebb */
         }
         .send-btn:hover { 
             transform: scale(1.05); 
