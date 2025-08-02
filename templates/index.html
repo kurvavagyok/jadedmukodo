@@ -231,34 +231,53 @@
             overflow: hidden;
         }
 
-        /* Header ultra-kompakt iPhone optimalizálás */
+        /* Header normál méretezés */
         .header { 
-            padding: 6px 12px; 
-            height: 44px; /* Még alacsonyabb header */
+            padding: 12px 16px; 
+            height: 60px; /* Normál header magasság */
+            background: var(--surface);
+            backdrop-filter: blur(40px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .header-title { 
-            font-size: 0.85rem; 
+            font-size: 1.1rem; 
             font-weight: 600;
-        }
-        .menu-toggle { 
-            width: 32px; 
-            height: 32px; /* Még kisebb gomb */
-            font-size: 0.8rem;
+            margin: 0;
         }
         .menu-toggle {
-            background: var(--glass-strong); border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px; color: var(--text);
-            cursor: pointer; transition: all 0.3s var(--transition-curve);
-            font-size: 0.9rem; width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
+            background: var(--glass-strong); 
+            border: 1px solid var(--border);
+            border-radius: 8px; 
+            padding: 8px; 
+            color: var(--text);
+            cursor: pointer; 
+            transition: all 0.3s var(--transition-curve);
+            font-size: 1rem; 
+            width: 40px; 
+            height: 40px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
         }
-        .menu-toggle:hover { background: var(--glass-strong); border-color: var(--border-glow); transform: scale(1.05); }        /* Chat terület */
+        .menu-toggle:hover { 
+            background: var(--glass-strong); 
+            border-color: var(--border-glow); 
+            transform: scale(1.05); 
+        }        /* Chat terület */
         .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Chat terület ultra-kompakt iPhone optimalizálás */
+        /* Chat terület normál méretezés */
         .messages-container { 
-            padding: 8px 12px; /* Még kisebb padding */
-            max-height: calc(100vh - 100px); /* Még több hely a chat-nek */
+            padding: 16px; 
+            max-height: calc(100vh - 140px); /* Megfelelő hely a chat-nek */
+            overflow-y: auto;
+            flex: 1;
         }
         .welcome-screen {
             text-align: center; max-width: 450px; margin: 0 auto;
@@ -431,25 +450,25 @@
                 font-size: 0.9rem; /* Nagyobb szöveg mobiltelefonon */
             }
 
-            /* Header optimalizálás - kompaktabb */
+            /* Header mobil optimalizálás */
             .header { 
-                padding: 8px 16px; 
-                height: 52px; /* Alacsonyabb header */
+                padding: 12px 16px; 
+                height: 56px; 
             }
             .header-title { 
-                font-size: 0.95rem; 
+                font-size: 1rem; 
                 font-weight: 600;
             }
             .menu-toggle { 
-                width: 36px; 
-                height: 36px; /* Kisebb gomb */
-                font-size: 0.9rem;
+                width: 40px; 
+                height: 40px; 
+                font-size: 1rem;
             }
 
-            /* Chat terület iOS optimalizálás - kompakt */
+            /* Chat terület mobil optimalizálás */
             .messages-container { 
-                padding: 12px 16px; /* Kisebb padding */
-                max-height: calc(100vh - 120px); /* Megfelelő hely a chat-nek */
+                padding: 16px; 
+                max-height: calc(100vh - 130px); /* Megfelelő hely a chat-nek */
             }
 
             /* Üzenetek kompaktabb méretezés */
@@ -464,7 +483,7 @@
                 line-height: 1.5;
             }
 
-            /* Input terület iOS optimalizálás - kompakt */
+            /* Input terület mobil optimalizálás */
             .input-area { 
                 padding: 12px 16px; 
                 padding-bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -475,17 +494,17 @@
                 z-index: 100;
             }
             .message-input { 
-                font-size: 0.9rem; /* Kisebb input szöveg */
-                min-height: 40px; /* Kisebb touch méret */
-                padding: 10px 16px;
+                font-size: 0.9rem; 
+                min-height: 44px; /* Megfelelő touch méret */
+                padding: 12px 16px;
             }
             .send-btn-container { 
-                width: 40px; 
-                height: 40px; /* Kisebb send gomb */
+                width: 44px; 
+                height: 44px; /* Egyforma méret */
             }
             .deep-search-toggle { 
-                width: 40px; 
-                height: 40px;
+                width: 44px; 
+                height: 44px;
                 font-size: 1rem;
             }
 
@@ -919,10 +938,10 @@
             color: var(--text-muted);
         }
 
-        /* Input terület ultra-kompakt iPhone optimalizálás */
+        /* Input area normál méretezés */
         .input-area { 
-            padding: 8px 12px; 
-            padding-bottom: max(8px, env(safe-area-inset-bottom) + 2px);
+            padding: 12px 16px; 
+            padding-bottom: max(12px, env(safe-area-inset-bottom) + 4px);
             position: fixed;
             bottom: 0;
             left: 0;
@@ -930,18 +949,18 @@
             z-index: 100;
         }
         .message-input { 
-            font-size: 0.8rem; /* Még kisebb input szöveg */
-            min-height: 36px; /* Még kisebb touch méret */
-            padding: 8px 14px;
+            font-size: 0.9rem; 
+            min-height: 44px; /* Normál touch méret */
+            padding: 12px 16px;
         }
         .send-btn-container { 
-            width: 36px; 
-            height: 36px; /* Még kisebb send gomb */
+            width: 44px; 
+            height: 44px; /* Normál send gomb */
         }
         .deep-search-toggle { 
-            width: 36px; 
-            height: 36px;
-            font-size: 0.9rem;
+            width: 44px; 
+            height: 44px;
+            font-size: 1rem;
         }
     </style>
 </head>
