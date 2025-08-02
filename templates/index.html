@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -397,8 +398,6 @@
 
         /* EGYSZERŰSÍTETT SIDEBAR GESTURE RENDSZER */
 
-
-
         /* iOS NATÍV SCROLL BEHAVIOR */
         body {
             -webkit-overflow-scrolling: touch;
@@ -612,8 +611,6 @@
             margin: 0; font-size: 0.75rem;
             color: var(--text-muted);
         }
-
-
     </style>
 </head>
 
@@ -626,7 +623,7 @@
 
     <div class="container">
         <aside class="sidebar" id="sidebar" role="navigation">
-            <div class="sidebar-header">
+            <header class="sidebar-header">
                 <div class="logo">
                     <div class="logo-icon" id="logo-icon-container">
                         <!-- Az SVG logó ide kerül a JS által -->
@@ -640,11 +637,11 @@
                     <i class="fas fa-plus"></i>
                     Új beszélgetés
                 </button>
-            </div>
+            </header>
             <div class="sidebar-content" id="sidebarContent"></div>
-            <div class="sidebar-footer">
+            <footer class="sidebar-footer">
                 <p class="made-by">JADE v3.5 by Sándor Kollár</p>
-            </div>
+            </footer>
         </aside>
 
         <main class="main-content" id="mainContent">
@@ -657,7 +654,7 @@
             </header>
 
             <div class="chat-area">
-                <div class="messages-container" id="messagesContainer" aria-live="polite">
+                <section class="messages-container" id="messagesContainer" aria-live="polite">
                     <div class="welcome-screen" id="welcomeScreen">
                         <h1 class="welcome-title">JADED</h1>
                         <p class="welcome-subtitle">
@@ -668,13 +665,13 @@
                             Kezdjük el!
                         </button>
                     </div>
-                </div>
+                </section>
 
-                <div class="input-area">
+                <footer class="input-area">
                     <div class="input-wrapper">
-                        <div class="deep-search-toggle" id="deepSearchToggle" onclick="toggleDeepSearch()" title="Deep Search aktiválása">
+                        <button class="deep-search-toggle" id="deepSearchToggle" onclick="toggleDeepSearch()" title="Deep Search aktiválása" aria-label="Deep Search aktiválása">
                             <i class="fas fa-microscope"></i>
-                        </div>
+                        </button>
                         <textarea 
                             class="message-input" 
                             id="messageInput" 
@@ -689,13 +686,13 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </footer>
             </div>
         </main>
     </div>
 
-    <!-- A modális és egyéb HTML elemek itt lennének, a rövidség kedvéért elhagyva, mivel nem változtak. -->
-    <div class="modal" id="serviceModal" style="display:none;"></div>
+    <!-- Modális ablak -->
+    <div class="modal" id="serviceModal" style="display:none;" role="dialog" aria-hidden="true"></div>
 
     <script>
         // --- Globális Állapot és Konfiguráció ---
@@ -794,8 +791,6 @@
                 throw error;
             }
         }
-
-
 
         // --- ÚJ SVG LOGÓ ---
         function createSVGLogo() {
@@ -1439,7 +1434,6 @@
         // iOS funkciók inicializálása
         setupiOSFeatures();
 
-
-</script>
+    </script>
 </body>
 </html>
